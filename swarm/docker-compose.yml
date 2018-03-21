@@ -1,0 +1,68 @@
+version: '2'
+services:
+
+  shipyard-swarm-manager:
+    image: swarm
+    container_name: shipyard-swarm-manager
+    restart: always
+    volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    ports:
+      - 2376:2375
+    expose:
+      - 2375
+    command:
+      - manage
+      - --host 
+      - tcp://0.0.0.0:2375
+      - token://3c739bd3a589da0788978f502ea318ea
+
+  shipyard-swarm-agent:
+    image: swarm
+    container_name: shipyard-swarm-agent
+    restart: always
+    volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    command:
+      - join
+      - --addr 
+      - 192.168.3.25:2375
+      - token://3c739bd3a589da0788978f502ea318ea
+
+  rethinkdb:
+    image: rethinkdb
+    container_name: shipyard-rethinkdb
+    restart: always
+    volumes:
+      - rethinkdb_data:/data
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    ports:
+      - 8082:8080
+      - 28015:28015
+      - 29015:29015
+    expose:
+      - 8080
+      - 28015
+      - 29015
+
+  shipyard:
+    image: shipyard/shipyard
+    container_name: shipyard-controller
+    restart: always
+    volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    links:
+      - rethinkdb
+      - shipyard-swarm-manager:swarm
+    ports:
+      - 8081:8080
+    expose:
+      - 8080
+    command:
+      - server
+      - -d
+      - tcp://swarm:2375
+
+volumes:
+  rethinkdb_data:
+    driver: local
