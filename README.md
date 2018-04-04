@@ -24,6 +24,6 @@ services:
     command:  
       -  
     networks   
-      -
+      -  
     depends_on:  
       -   
