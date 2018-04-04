@@ -23,7 +23,7 @@ services:
       -  
     command:  
       -  
-    networks   
+    networks:   
       -  
     depends_on:  
       -   
