@@ -3,11 +3,11 @@
 version: '2.3'
 
 networks:  
-  net_a:  
-  net_b:  
+  frontend:  
+  backend:  
 
 volumes:  
-  data1:  
+  data:  
 
 services:  
   service_name:  
