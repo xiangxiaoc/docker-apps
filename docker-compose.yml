@@ -1,5 +1,4 @@
-# docker-compose
-## 单机版常用模板
+# 单机版常用模板
 version: '2.3'
 
 networks:
