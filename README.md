@@ -27,3 +27,8 @@ services:
       -  
     depends_on:  
       -   
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
