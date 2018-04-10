@@ -32,4 +32,4 @@ services:
         max-file: '3'
         max-size: 10m
     mem_limit: 1g
-    
+    memswap_limit: 0
