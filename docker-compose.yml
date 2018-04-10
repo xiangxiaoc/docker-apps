@@ -2,31 +2,31 @@
 ## 单机版常用模板
 version: '2.3'
 
-networks:  
-  frontend:  
-  backend:  
+networks:
+  frontend:
+  backend:
 
-volumes:  
-  data:  
+volumes:
+  data:
 
-services:  
-  service_name:  
-    image:   
-    container_name:   
-    restart: always  
-    volumes:  
-      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro  
-    ports:  
-      -   
-    working_dir:   
-    environment:  
-      -  
-    command:  
-      -  
-    networks:   
-      -  
-    depends_on:  
-      -   
+services:
+  $service_name:
+    image: 
+    container_name: 
+    restart: always
+    volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    ports:
+      - ":"
+    working_dir: 
+    environment: 
+      - 
+    command:
+      - 
+    networks:
+      - 
+    depends_on:
+      - 
     logging:
       driver: json-file
       options:
