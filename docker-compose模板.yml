@@ -16,8 +16,8 @@ services:
     volumes:
       - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
     ports:
-      - ":"
-    working_dir: 
+      - "80:80"
+    working_dir: /
     environment: 
       - 
     command:
