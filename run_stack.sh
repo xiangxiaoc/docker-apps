@@ -191,15 +191,15 @@ function docker_service_logs() {
     echo 
     read -p "输入待查看日志的服务序号： " cho
     read -p "要查询多久前到现在日志？  (单位：分钟 默认：0)： " time_to_now
+    [ -z $time_to_now ] && since_arg="--since 0s" || since_arg="--since ${time_to_now}m"
     read -p "预览或保存到本地  [ 1 预览 | 2 下载 ]： " download_cho
     case $download_cho in 
         1)  
-        [ -z $time_to_now ] && since_arg="--since 0s" || since_arg="--since ${time_to_now}m"
-        docker $docker_remote_arg service logs -f $since_arg ${list[$cho]}    
+            docker $docker_remote_arg service logs -f $since_arg ${list[$cho]}    
         ;;
         2)  
-        docker $docker_remote_arg service logs $since_arg ${list[$cho]} &> $(date -d "-${time_to_now}minutes" "+%m-%d_%H.%M.%S")_to_$(date "+%m-%d_%H.%M.%S")_${list[$cho]}.log
-        echo "下载完成，保存为./$(date -d "-${time_to_now}minutes" "+%m-%d_%H.%M.%S")_to_$(date "+%m-%d_%H.%M.%S")_${list[$cho]}.log"
+            docker $docker_remote_arg service logs $since_arg ${list[$cho]} &> $(date -d "-${time_to_now}minutes" "+%m-%d_%H.%M.%S")_to_$(date "+%m-%d_%H.%M.%S")_${list[$cho]}.log
+            echo "下载完成，保存为./$(date -d "-${time_to_now}minutes" "+%m-%d_%H.%M.%S")_to_$(date "+%m-%d_%H.%M.%S")_${list[$cho]}.log"
         ;;
     esac
         
@@ -210,7 +210,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.0 , build: 2018-06-12 14:28:56
+Docker stack deploy script , version: 1.0.1 , build: 2018-06-13 19:29:04
 
 Usage: $0 Command [arg]
             
