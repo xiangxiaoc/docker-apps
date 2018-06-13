@@ -175,7 +175,7 @@ function docker_compose_logs() {
         read -p "输入待查看日志的服务序号： " cho
         read -p "查看最近多少条日志？(默认：全部)： " tail
         [ -z $tail ] && tail_arg="--tail all" || tail_arg="--tail $tail"
-        read -p "查看或导出  [ 1 查看 | 2 导出 ]： " download_cho
+        read -p "预览或导出到文件  [ 1 预览 | 2 导出 ]： " download_cho
         case $download_cho in 
             1)  
                 docker-compose $docker_compose_file_arg logs -f $tail_arg ${list[$cho]}    

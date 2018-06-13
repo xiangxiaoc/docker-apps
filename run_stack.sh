@@ -192,7 +192,7 @@ function docker_service_logs() {
     read -p "输入待查看日志的服务序号： " cho
     read -p "要查询多久前到现在日志？  (单位：分钟 默认：0)： " time_to_now
     [ -z $time_to_now ] && since_arg="--since 0s" || since_arg="--since ${time_to_now}m"
-    read -p "预览或保存到本地  [ 1 预览 | 2 下载 ]： " download_cho
+    read -p "预览或下载到本地文件  [ 1 预览 | 2 下载 ]： " download_cho
     case $download_cho in 
         1)  
             docker $docker_remote_arg service logs -f $since_arg ${list[$cho]}    
