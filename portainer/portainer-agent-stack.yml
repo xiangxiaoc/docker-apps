@@ -13,11 +13,16 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - agent_network
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
     deploy:
       mode: global
 
   portainer:
-    image: portainer/portainer:1.17.0
+    image: portainer/portainer:1.17.1
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
       - "9000:9000"
@@ -25,6 +30,11 @@ services:
       - portainer_data:/data
     networks:
       - agent_network
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
     deploy:
       mode: replicated
       replicas: 1
