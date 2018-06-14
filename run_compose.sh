@@ -40,7 +40,7 @@ EOF_init
     fi
     echo
 
-echo -e "初始化完成，即将根据 $docker_compose_file_new 管理容器服务，请运行 $0 其他命令"
+echo -e "初始化完成，即将根据 $([ -z $docker_compose_file_new ] && echo $docker_compose_file || echo $docker_compose_file_new) 管理容器服务，请运行 $0 其他命令"
 
 }
 
