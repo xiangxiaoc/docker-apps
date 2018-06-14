@@ -64,13 +64,13 @@ function docker_image_load() {
     "")
     for i in $(ls ./images)
         do
-            docker image load < ../images/$i
+            docker image load < ./images/$i
         done
     ;;
     $1)
     for i in $(ls ./$1)
         do
-            docker image load < ../$1/$i
+            docker image load < ./$1/$i
         done
     ;;
     esac

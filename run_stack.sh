@@ -82,13 +82,13 @@ function docker_image_load() {
     "")
     for i in $(ls ./images)
         do
-            docker image load < ../images/$i
+            docker image load < ./images/$i
         done
     ;;
     $1)
     for i in $(ls ./$1)
         do
-            docker image load < ../$1/$i
+            docker image load < ./$1/$i
         done
     ;;
     esac
@@ -166,6 +166,9 @@ function docker_service_remove() {
         fi        
     ;;
     esac
+    echo "等待 docker 清理服务关联的容器"
+    sleep 30
+    echo "移除完成"
 }
 
 function docker_service_redeploy() {
