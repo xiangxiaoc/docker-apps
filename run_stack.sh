@@ -213,7 +213,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.2 , build: 2018-06-14 17:09:42
+Docker stack deploy script , version: 1.0.3 , build: 2018-06-14 19:33:50
 
 Usage: $0 Command [arg]
             

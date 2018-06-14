@@ -208,7 +208,7 @@ function docker_compose_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker-Compose deploy script , Version: 1.0.5 , build: 2018-06-14 17:10:11
+Docker-Compose deploy script , Version: 1.0.6 , build: 2018-06-14 19:34:05
 
 Usage: $0 Command [arg]
             
