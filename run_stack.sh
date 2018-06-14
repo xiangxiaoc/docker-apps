@@ -59,7 +59,7 @@ EOF_init
     fi
     echo
 
-echo -e "初始化完成，即将根据 $docker_stack_compose_file_new 管理 $docker_host_ip_new $docker_stack_name_new 服务栈，请运行 $0 其他命令"
+echo -e "初始化完成，即将根据 $([ -z $docker_stack_compose_file_new ] && echo $docker_stack_compose_file || echo $docker_stack_compose_file_new) 管理 $([ -z $docker_host_ip_new ] && echo $docker_host_ip || echo $docker_host_ip_new) $([ -z $docker_stack_name_new ] && echo $docker_stack_name || echo $docker_stack_name_new) 服务栈，请运行 $0 其他命令"
 
 }
 
