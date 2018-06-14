@@ -113,11 +113,16 @@ function docker_compose_restart() {
     for docker_service_name in $(docker_compose_ps --services)
         do
             i=$((i+1))
-            echo "$i. $docker_service_name"
+                if [ $i -lt 10 ] ; then
+                    j=' '$i
+                    echo "$j.   $docker_service_name"
+                else
+                    echo "$i.   $docker_service_name"
+                fi
             list[$i]=$docker_service_name
         done
-    read -p "输入待重启服务的序号： " j
-    docker-compose $docker_compose_file_arg restart "${list[$j]}" 
+    read -p "输入待重启服务的序号： " cho
+    docker-compose $docker_compose_file_arg restart "${list[$cho]}" 
     ;;
     -a) docker-compose $docker_compose_file_arg restart    ;;
     esac
@@ -131,11 +136,16 @@ function docker_compose_stop() {
     for docker_service_name in $(docker_compose_ps --services)
         do
             i=$((i+1))
-            echo "$i. $docker_service_name"
+                if [ $i -lt 10 ] ; then
+                    j=' '$i
+                    echo "$j.   $docker_service_name"
+                else
+                    echo "$i.   $docker_service_name"
+                fi
             list[$i]=$docker_service_name
         done
-    read -p "输入待停止服务的序号： " j
-    docker-compose $docker_compose_file_arg restart "${list[$j]}" 
+    read -p "输入待停止服务的序号： " cho
+    docker-compose $docker_compose_file_arg restart "${list[$cho]}" 
     ;;
     -a)  docker-compose $docker_compose_file_arg stop  ;;
     esac

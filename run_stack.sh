@@ -143,7 +143,7 @@ function docker_service_remove() {
             do
                 i=$((i+1))
                 if [ $i -lt 10 ] ; then
-                    j=0$i
+                    j=' '$i
                     echo "$j.   $docker_service_name"
                 else
                     echo "$i.   $docker_service_name"
