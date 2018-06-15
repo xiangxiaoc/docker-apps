@@ -1,30 +1,25 @@
 # 单机版常用模板
+
+```yaml
 version: '2.3'
 
-networks:
-  frontend:
-  backend:
-
-volumes:
-  data:
-
 services:
-  $service_name:
-    image: 
+  SERVICE_NAME:
+    image: IMAGE_NAME
     restart: always
     volumes:
       - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    networks:
+      - custom_network
     ports:
       - "80:80"
     working_dir: /
-    environment: 
-      - 
+    environment:
+      - ENV1=value1
     command:
-      - 
-    networks:
-      - 
+      - CMD
     depends_on:
-      - 
+      - SERVICE_NAME
     logging:
       driver: json-file
       options:
@@ -32,3 +27,16 @@ services:
         max-size: 10m
     mem_limit: 1g
     memswap_limit: 0
+
+volumes:
+  data:
+
+networks:
+  default:
+    external:
+      name: xxx
+  custom_network:
+    driver: bridge
+  backend:
+    external: true
+```
