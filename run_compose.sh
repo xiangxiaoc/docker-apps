@@ -156,12 +156,7 @@ function docker_compose_down() {
 }
 
 function docker_compose_ps() {
-    while true
-        do
-            clear
-            docker-compose $docker_compose_file_arg ps $@
-            sleep 1
-        done
+    docker-compose $docker_compose_file_arg ps $@
 }
 
 function docker_compose_logs() {
