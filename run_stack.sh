@@ -195,7 +195,8 @@ function docker_service_logs() {
     read -p "输入待查看日志的服务序号： " cho
     read -p "要查询多久前到现在日志？  (单位：分钟 默认：全部日志)： " time_to_now
     [ -z $time_to_now ] && since_arg="" || since_arg="--since ${time_to_now}m"
-    read -p "预览或下载到本地文件  [ 1 预览 | 2 下载 ]： " download_cho
+    read -p "预览或下载到本地文件  [ 1 预览 | 2 下载 ]（默认：预览）： " download_cho
+    [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
     case $download_cho in 
         1)  
             docker $docker_remote_arg service logs -f $since_arg ${list[$cho]}    
@@ -213,7 +214,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.3 , build: 2018-06-14 19:33:50
+Docker stack deploy script , version: 1.0.4 , build: 2018-06-20 21:05:41
 
 Usage: $0 Command [arg]
             

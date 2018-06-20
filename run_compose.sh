@@ -110,6 +110,7 @@ function docker_compose_restart() {
     "")
     declare -A list
     i=0
+    echo -e "序号  服务\n----------"
     for docker_service_name in $(docker_compose_ps --services)
         do
             i=$((i+1))
@@ -133,6 +134,7 @@ function docker_compose_stop() {
     "")
     declare -A list
     i=0
+    echo -e "序号  服务\n----------"
     for docker_service_name in $(docker_compose_ps --services)
         do
             i=$((i+1))
@@ -145,7 +147,7 @@ function docker_compose_stop() {
             list[$i]=$docker_service_name
         done
     read -p "输入待停止服务的序号： " cho
-    docker-compose $docker_compose_file_arg restart "${list[$cho]}" 
+    docker-compose $docker_compose_file_arg stop "${list[$cho]}" 
     ;;
     -a)  docker-compose $docker_compose_file_arg stop  ;;
     esac
@@ -180,14 +182,15 @@ function docker_compose_logs() {
         read -p "输入待查看日志的服务序号： " cho
         read -p "查看最近多少条日志？(默认：全部)： " tail
         [ -z $tail ] && tail_arg="--tail all" || tail_arg="--tail $tail"
-        read -p "预览或导出到文件  [ 1 预览 | 2 导出 ]： " download_cho
+        read -p "预览或下载到文件  [ 1 预览 | 2 下载 ]（默认：预览）： " download_cho
+        [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
         case $download_cho in 
             1)  
                 docker-compose $docker_compose_file_arg logs -f $tail_arg ${list[$cho]}    
             ;;
             2)  
-                docker-compose $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${list[$cho]}_$tail.log
-                echo "导出完成，保存为./${list[$cho]}_$tail.log"
+                docker-compose $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${list[$cho]}_$(date "+%m%d-%H%M%S")_$tail.log
+                echo "导出完成，保存在$(pwd)目录下"
             ;;
         esac
     ;;
@@ -203,7 +206,7 @@ function docker_compose_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker-Compose deploy script , Version: 1.0.6 , build: 2018-06-14 19:34:05
+Docker-Compose deploy script , Version: 1.0.7 , build: 2018-06-20 21:05:32
 
 Usage: $0 Command [arg]
             
