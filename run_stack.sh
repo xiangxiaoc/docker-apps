@@ -167,7 +167,17 @@ function docker_service_remove() {
     ;;
     esac
     echo "等待 docker 清理服务关联的容器"
-    sleep 30
+    i=0
+    printf "[  "
+    until [ $i -eq 50 ]
+        do
+            sleep 0.1
+            printf "\b"
+            printf "="
+            printf ">"
+            i=$(($i+1))
+        done
+    echo " ]"
     echo "移除完成"
 }
 
@@ -214,7 +224,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.5 , build: 2018-06-21 11:09:56
+Docker stack deploy script , version: 1.0.6 , build: 2018-06-21 15:10:18
 
 Usage: $0 Command [arg]
             
