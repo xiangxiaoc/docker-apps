@@ -124,7 +124,7 @@ function docker_stack_ps() {
     while true
         do
             clear
-            docker $docker_remote_arg stack ps $docker_stack_name | sort -k 2 -r
+            docker $docker_remote_arg stack ps --no-trunc $docker_stack_name  | sort -k 2 -r
             sleep 5
         done
 
@@ -160,6 +160,8 @@ function docker_service_remove() {
         if [ ! -z "$cho" ] ; then
             if [ $cho = 'y' -o $cho = 'Y'  ] ; then
                 docker $docker_remote_arg stack rm $docker_stack_name
+            else 
+                exit 0
             fi
         else
             exit 233
@@ -224,7 +226,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.6 , build: 2018-06-21 15:10:18
+Docker stack deploy script , version: 1.0.7 , build: 2018-06-21 16:00:06
 
 Usage: $0 Command [arg]
             
