@@ -214,7 +214,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.4 , build: 2018-06-20 21:05:41
+Docker stack deploy script , version: 1.0.5 , build: 2018-06-21 11:09:56
 
 Usage: $0 Command [arg]
             
@@ -224,8 +224,8 @@ Commands:
   save              备份 $docker_stack_compose_file 里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   port [PORT]       查看 $docker_stack_compose_file 对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]  
-  deploy            根据 $docker_stack_compose_file 部署或更新 stack 服务栈
-  ps                查看 stack 服务栈状态
+  deploy            根据 $docker_stack_compose_file 部署或更新 $docker_host_ip $docker_stack_name 服务栈
+  ps                查看 $docker_stack_name 服务栈状态
   rm [-a]           移除服务 [-a 全部]
   redeploy          强制重新部署服务
   logs              查看服务日志
