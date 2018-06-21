@@ -24,6 +24,11 @@ services:
           - node.role == worker
 
 networks:
-  
+
   default:
+    driver: overlay
+      ipam:
+        driver: default
+        config:
+          - subnet: 10.10.0.0/16
 ```
