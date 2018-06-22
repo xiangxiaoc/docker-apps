@@ -124,7 +124,7 @@ function docker_stack_ps() {
     while true
         do
             clear
-            docker $docker_remote_arg stack ps --no-trunc $docker_stack_name  | sort -k 2 -r
+            docker $docker_remote_arg stack ps --no-trunc $docker_stack_name  | sort -k 2
             sleep 5
         done
 
