@@ -216,7 +216,7 @@ Commands:
   save              备份 $docker_compose_file 里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   port [PORT]       查看 $docker_compose_file 对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
-  up                根据 $docker_compose_file 创建或更新容器
+  up                根据 $docker_compose_file 创建或重新创建容器
   start             启动服务
   restart [-a]      重启服务 [-a 全部]
   stop [-a]         停止服务 [-a 全部]
