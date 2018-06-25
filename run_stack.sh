@@ -120,13 +120,45 @@ function docker_stack_deploy() {
     
 }
 
+function docker_stack_services() {
+    docker $docker_remote_arg stack services $docker_stack_name
+}
+
 function docker_stack_ps() {
-    while true
-        do
-            clear
-            docker $docker_remote_arg stack ps --no-trunc $docker_stack_name  | sort -k 2
-            sleep 5
-        done
+    case $1 in
+        "")
+            declare -A list
+            i=0
+            echo -e "序号  服务\n----------"
+            for docker_service_name in $(docker $docker_remote_arg stack services $docker_stack_name | grep -v NAME |awk '{print $2}' | sort -n)
+                do
+                    i=$((i+1))
+                    if [ $i -lt 10 ] ; then
+                        j=' '$i
+                        echo "$j.   $docker_service_name"
+                    else
+                        echo "$i.   $docker_service_name"
+                    fi
+                    list[$i]=$docker_service_name
+                done
+            echo 
+            read -p "输入待查看任务的服务序号： " cho
+            while true
+                do
+                    clear
+                    docker $docker_remote_arg service ps --no-trunc ${list[$cho]}
+                    sleep 1
+                done
+        ;;
+        "-a")
+            while true
+                do
+                    clear
+                    docker $docker_remote_arg stack ps $docker_stack_name  | sort -k 2
+                    sleep 5
+                done
+        ;;
+    esac
 
 }
 
@@ -151,7 +183,7 @@ function docker_service_remove() {
                 list[$i]=$docker_service_name
             done
         echo 
-        read -p "输入待移除服务的序号(不需要输入前面的'0')，按回车执行： " cho
+        read -p "输入待移除服务的序号，按回车执行： " cho
         echo -e "\n开始移除服务..."
         docker $docker_remote_arg service rm "${list[$cho]}" 
     ;;
@@ -204,7 +236,7 @@ function docker_service_logs() {
             list[$i]=$docker_service_name
         done
     echo 
-    read -p "输入待查看日志的服务序号： " cho
+    read -p "输入待查看日志的服务序号，按回车执行： " cho
     read -p "要查询多久前到现在日志？  (单位：分钟 默认：全部日志)： " time_to_now
     [ -z $time_to_now ] && since_arg="" || since_arg="--since ${time_to_now}m"
     read -p "预览或下载到本地文件  [ 1 预览 | 2 下载 ]（默认：预览）： " download_cho
@@ -226,7 +258,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.7 , build: 2018-06-21 16:00:06
+Docker stack deploy script , version: 1.0.8 , build: 2018-06-25 16:15:32
 
 Usage: $0 Command [arg]
             
@@ -237,7 +269,8 @@ Commands:
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   port [PORT]       查看 $docker_stack_compose_file 对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]  
   deploy            根据 $docker_stack_compose_file 部署或更新 $docker_host_ip $docker_stack_name 服务栈
-  ps                查看 $docker_stack_name 服务栈状态
+  ls                查看 $docker_stack_name 各服务概况
+  ps [-a]           查看 $docker_stack_name 各服务任务状态 [-a 全部服务任务状态]
   rm [-a]           移除服务 [-a 全部]
   redeploy          强制重新部署服务
   logs              查看服务日志
@@ -260,6 +293,7 @@ function main() {
         load)       docker_image_load $@ ;      exit 0  ;;
         port)       docker_stack_port $@  ;     exit 0  ;;        
         deploy)     docker_stack_deploy  ;      exit 0  ;;
+        ls)         docker_stack_services $@ ;  exit 0  ;;
         ps)         docker_stack_ps $@ ;        exit 0  ;;
         rm)         docker_service_remove $@;   exit 0  ;;
         redeploy)   docker_service_redeploy $@; exit 0  ;;
