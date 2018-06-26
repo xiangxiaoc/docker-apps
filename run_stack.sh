@@ -121,7 +121,7 @@ function docker_stack_deploy() {
 }
 
 function docker_stack_services() {
-    docker $docker_remote_arg stack services $docker_stack_name
+    docker $docker_remote_arg stack services $docker_stack_name | sort -k 2
 }
 
 function docker_stack_ps() {
