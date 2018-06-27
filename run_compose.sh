@@ -5,6 +5,7 @@
 # global variable define #
 ##########################
 docker_host_ip=""
+[ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 
@@ -63,7 +64,7 @@ function docker_image_save() {
     for i in $(grep "image:" $docker_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u)
         do
             j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
-            docker image save $i > ./images_bak_$now_time/$j
+            docker $docker_remote_arg image save $i > ./images_bak_$now_time/$j
         done
 }
 
@@ -72,13 +73,13 @@ function docker_image_load() {
     "")
     for i in $(ls ./images)
         do
-            docker image load < ./images/$i
+            docker $docker_remote_arg image load < ./images/$i
         done
     ;;
     $1)
     for i in $(ls ./$1)
         do
-            docker image load < ./$1/$i
+            docker $docker_remote_arg image load < ./$1/$i
         done
     ;;
     esac
@@ -102,9 +103,9 @@ function docker_image_build() {
                     list[$i]=$docker_service_name
                 done
             read -p "输入待构建服务镜像的序号： " cho
-            docker-compose $docker_compose_file_arg build "${list[$cho]}" 
+            docker-compose $docker_remote_arg $docker_compose_file_arg build "${list[$cho]}" 
         ;;
-        "-a") docker-compose $docker_compose_file_arg build    ;;
+        "-a") docker-compose $docker_remote_arg $docker_compose_file_arg build    ;;
     esac
 }
 
@@ -130,11 +131,11 @@ function docker_compose_port() {
 
 function docker_compose_up() {
     echo -e "读取部署编排文件 ./$docker_compose_file \n开始创建容器 ... "
-    docker-compose $docker_compose_file_arg up -d
+    docker-compose $docker_remote_arg $docker_compose_file_arg up -d
 }
 
 function docker_compose_start() {
-    docker-compose $docker_compose_file_arg start
+    docker-compose $docker_remote_arg $docker_compose_file_arg start
 }
 
 function docker_compose_restart() {
@@ -155,9 +156,9 @@ function docker_compose_restart() {
             list[$i]=$docker_service_name
         done
     read -p "输入待重启服务的序号： " cho
-    docker-compose $docker_compose_file_arg restart "${list[$cho]}" 
+    docker-compose $docker_remote_arg $docker_compose_file_arg restart "${list[$cho]}" 
     ;;
-    -a) docker-compose $docker_compose_file_arg restart    ;;
+    -a) docker-compose $docker_remote_arg $docker_compose_file_arg restart    ;;
     esac
 }
 
@@ -179,18 +180,18 @@ function docker_compose_stop() {
             list[$i]=$docker_service_name
         done
     read -p "输入待停止服务的序号： " cho
-    docker-compose $docker_compose_file_arg stop "${list[$cho]}" 
+    docker-compose $docker_remote_arg $docker_compose_file_arg stop "${list[$cho]}" 
     ;;
-    -a)  docker-compose $docker_compose_file_arg stop  ;;
+    -a)  docker-compose $docker_remote_arg $docker_compose_file_arg stop  ;;
     esac
 }
 
 function docker_compose_down() {
-    docker-compose $docker_compose_file_arg down
+    docker-compose $docker_remote_arg $docker_compose_file_arg down
 }
 
 function docker_compose_ps() {
-    docker-compose $docker_compose_file_arg ps $@
+    docker-compose $docker_remote_arg $docker_compose_file_arg ps $@
 }
 
 function docker_compose_logs() {
@@ -218,10 +219,10 @@ function docker_compose_logs() {
         [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
         case $download_cho in 
             1)  
-                docker-compose $docker_compose_file_arg logs -f $tail_arg ${list[$cho]}    
+                docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg ${list[$cho]}    
             ;;
             2)  
-                docker-compose $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${list[$cho]}_$(date "+%m%d-%H%M%S")_$tail.log
+                docker-compose $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${list[$cho]}_$(date "+%m%d-%H%M%S")_$tail.log
                 echo "导出完成，保存在$(pwd)目录下"
             ;;
         esac
@@ -229,7 +230,7 @@ function docker_compose_logs() {
     -a) 
         read -p "查看最近多少条日志？(默认：全部)： " tail
         [ -z $tail ] && tail_arg="--tail all" || tail_arg="--tail $tail"
-        docker-compose $docker_compose_file_arg logs -f $tail_arg   ;;
+        docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg   ;;
     esac
 }
 
@@ -238,7 +239,7 @@ function docker_compose_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker-Compose deploy script , Version: 1.0.8 , build: 2018-06-27 17:55:10
+Docker-Compose deploy script , Version: 1.0.9 , build: 2018-06-27 18:52:25
 
 Usage: $0 Command [arg]
             
