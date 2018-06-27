@@ -4,6 +4,7 @@
 ##########################
 # global variable define #
 ##########################
+docker_host_ip=""
 docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 
@@ -20,7 +21,14 @@ $string_placeholders docker-compose 部署脚本 $string_placeholders
 
 EOF_init
 
-    
+    read -p "是否改变远程 Docker Host IP 地址？[y/N]:(默认 N) " cho
+    if [ ! -z $cho ] ; then
+        if [ $cho = 'y' -o $cho = 'Y' ] ; then
+            read -p "输入远程 Docker Host 的 IP 地址（输入空则控制本地 Docker 服务 ）： " docker_host_ip_new
+            sed -i  "/^docker_host_ip/ c docker_host_ip=\"$docker_host_ip_new\"" $0
+        fi
+    fi  
+    echo
 
     # read -p "是否改变集群编排文件所在目录？[y/N]:(默认 N) " cho
     # if [ ! -z $cho ] ; then
@@ -76,6 +84,30 @@ function docker_image_load() {
     esac
 }
 
+function docker_image_build() {
+    case $1 in
+        "")
+            declare -A list
+            i=0
+            echo -e "序号  服务\n----------"
+            for docker_service_name in $(docker_compose_ps --services)
+                do
+                    i=$((i+1))
+                        if [ $i -lt 10 ] ; then
+                            j=' '$i
+                            echo "$j.   $docker_service_name"
+                        else
+                            echo "$i.   $docker_service_name"
+                        fi
+                    list[$i]=$docker_service_name
+                done
+            read -p "输入待构建服务镜像的序号： " cho
+            docker-compose $docker_compose_file_arg build "${list[$cho]}" 
+        ;;
+        "-a") docker-compose $docker_compose_file_arg build    ;;
+    esac
+}
+
 ##################
 # docker-compose #
 ##################
@@ -98,7 +130,7 @@ function docker_compose_port() {
 
 function docker_compose_up() {
     echo -e "读取部署编排文件 ./$docker_compose_file \n开始创建容器 ... "
-    docker-compose $docker_compose_file_arg up --no-start
+    docker-compose $docker_compose_file_arg up -d
 }
 
 function docker_compose_start() {
@@ -206,7 +238,7 @@ function docker_compose_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker-Compose deploy script , Version: 1.0.7 , build: 2018-06-20 21:05:32
+Docker-Compose deploy script , Version: 1.0.8 , build: 2018-06-27 17:55:10
 
 Usage: $0 Command [arg]
             
@@ -215,14 +247,15 @@ Commands:
   init              脚本初始化
   save              备份 $docker_compose_file 里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
+  build [-a]        构建镜像 [-a 全部服务]
   port [PORT]       查看 $docker_compose_file 对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
   up                根据 $docker_compose_file 创建或重新创建容器
   start             启动服务
-  restart [-a]      重启服务 [-a 全部]
-  stop [-a]         停止服务 [-a 全部]
+  restart [-a]      重启服务 [-a 全部服务]
+  stop [-a]         停止服务 [-a 全部服务]
   down              移除全部容器
   ps                查看服务状态
-  logs [-a]         查看服务日志 [-a 全部]
+  logs [-a]         查看服务日志 [-a 全部服务]
 
   -h, --help        显示此帮助页
 EOF_help
@@ -240,6 +273,7 @@ function main() {
         init)       script_init ;               exit 0  ;;
         save)       docker_image_save ;         exit 0  ;;
         load)       docker_image_load $@ ;      exit 0  ;;
+        build)      docker_image_build $@ ;     exit 0  ;;
         up)         docker_compose_up ;         exit 0  ;;
         start)      docker_compose_start ;      exit 0  ;;
         restart)    docker_compose_restart $@;  exit 0  ;;
