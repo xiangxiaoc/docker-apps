@@ -6,8 +6,10 @@
 ##########################
 docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
+[ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
+[ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE"./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
 
 string_placeholders="#####"
 
@@ -239,19 +241,20 @@ function docker_compose_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker-Compose deploy script , Version: 1.0.9 , build: 2018-06-27 18:52:25
+
+Docker-Compose deploy script , Version: 1.0.10 , build: 2018-06-27 20:05:21
 
 Usage: $0 Command [arg]
             
 Commands:
 
   init              脚本初始化
-  save              备份 $docker_compose_file 里面用到的镜像
+  save              备份目前编排文件里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   build [-a]        构建镜像 [-a 全部服务]
-  port [PORT]       查看 $docker_compose_file 对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
-  up                根据 $docker_compose_file 创建或重新创建容器
-  start             启动服务
+  port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
+  up                创建或重新创建容器，并启动
+  start             启动停止中的服务
   restart [-a]      重启服务 [-a 全部服务]
   stop [-a]         停止服务 [-a 全部服务]
   down              移除全部容器
@@ -259,6 +262,11 @@ Commands:
   logs [-a]         查看服务日志 [-a 全部服务]
 
   -h, --help        显示此帮助页
+
+# 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
+Docker Daemon： $DOCKER_HOST
+Compose File： $docker_compose_file 
+
 EOF_help
 }
 
@@ -283,7 +291,7 @@ function main() {
         ps)         docker_compose_ps $@ ;      exit 0  ;;
         logs)       docker_compose_logs $@ ;    exit 0  ;;
         port)       docker_compose_port $@  ;   exit 0  ;;
-        *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 0  ;;
+        *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 1  ;;
     esac
 }
 
