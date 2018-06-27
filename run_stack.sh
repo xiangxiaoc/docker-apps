@@ -73,7 +73,7 @@ function docker_image_save() {
     for i in $(grep "image:" $docker_stack_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u)
         do
             j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
-            docker image save $i > ./images_bak_$now_time/$j
+            docker $docker_remote_arg image save $i > ./images_bak_$now_time/$j
         done
 }
 
@@ -82,13 +82,13 @@ function docker_image_load() {
     "")
     for i in $(ls ./images)
         do
-            docker image load < ./images/$i
+            docker $docker_remote_arg image load < ./images/$i
         done
     ;;
     $1)
     for i in $(ls ./$1)
         do
-            docker image load < ./$1/$i
+            docker $docker_remote_arg image load < ./$1/$i
         done
     ;;
     esac
@@ -258,7 +258,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.8 , build: 2018-06-25 16:15:32
+Docker stack deploy script , version: 1.0.9 , build: 2018-06-27 19:35:19
 
 Usage: $0 Command [arg]
             
