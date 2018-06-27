@@ -5,7 +5,8 @@
 # global variable define #
 ##########################
 docker_host_ip=""
-[ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H $docker_host_ip"
+[ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
+[ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 # docker_stack_compose_dir=""
 docker_stack_compose_file="portainer/portainer-agent-stack.yml"
 docker_stack_name="portainer-swarm"
@@ -258,24 +259,30 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.9 , build: 2018-06-27 19:35:19
+Docker stack deploy script , version: 1.0.10 , build: 2018-06-27 20:12:44
 
 Usage: $0 Command [arg]
             
 Commands:
 
-  init              初始化设置
-  save              备份 $docker_stack_compose_file 里面用到的镜像
+  init              脚本初始化
+  save              备份当前编排文件里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
-  port [PORT]       查看 $docker_stack_compose_file 对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]  
-  deploy            根据 $docker_stack_compose_file 部署或更新 $docker_host_ip $docker_stack_name 服务栈
-  ls                查看 $docker_stack_name 各服务概况
-  ps [-a]           查看 $docker_stack_name 各服务任务状态 [-a 全部服务任务状态]
-  rm [-a]           移除服务 [-a 全部]
+  port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]  
+  deploy            部署或更新服务栈
+  ls                查看各服务概况
+  ps [-a]           查看各服务任务状态 [-a 全部服务任务状态]
+  rm [-a]           移除中的服务 [-a 全部]
   redeploy          强制重新部署服务
   logs              查看服务日志
 
   -h, --help        显示此帮助页
+
+# 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
+Docker Daemon: $DOCKER_HOST
+Compose File: $docker_stack_compose_file
+Stack Name: $docker_stack_name
+
 EOF_help
 }
 

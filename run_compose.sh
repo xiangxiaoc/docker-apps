@@ -9,7 +9,7 @@ docker_host_ip=""
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
-[ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE"./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
+[ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
 
 string_placeholders="#####"
 
@@ -265,7 +265,7 @@ Commands:
 
 # 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
 Docker Daemon： $DOCKER_HOST
-Compose File： $docker_compose_file 
+Compose File： $DOCKER_COMPOSE_FILE
 
 EOF_help
 }
