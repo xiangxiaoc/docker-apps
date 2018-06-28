@@ -155,7 +155,7 @@ function docker_stack_ps() {
             while true
                 do
                     clear
-                    docker $docker_remote_arg stack ps $docker_stack_name  | sort -k 2
+                    docker $docker_remote_arg stack ps --no-trunc $docker_stack_name  | sort -k 2
                     sleep 5
                 done
         ;;
@@ -259,7 +259,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.0.10 , build: 2018-06-27 20:12:44
+Docker stack deploy script , version: 1.1.0 , build: 2018-06-28 17:35:17
 
 Usage: $0 Command [arg]
             
