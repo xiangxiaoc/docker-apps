@@ -9,7 +9,7 @@ docker_host_ip=""
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
-[ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
+[ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
 
 string_placeholders="#####"
 
