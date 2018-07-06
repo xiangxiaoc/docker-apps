@@ -189,7 +189,7 @@ function docker_compose_stop() {
 }
 
 function docker_compose_down() {
-    docker-compose $docker_remote_arg $docker_compose_file_arg down
+    docker-compose $docker_remote_arg $docker_compose_file_arg down $@
 }
 
 function docker_compose_ps() {
@@ -242,7 +242,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.0.10 , build: 2018-06-27 20:05:21
+Docker-Compose deploy script , Version: 1.1.0 , build: 2018-07-06 15:45:04
 
 Usage: $0 Command [arg]
             
@@ -257,7 +257,7 @@ Commands:
   start             启动停止中的服务
   restart [-a]      重启服务 [-a 全部服务]
   stop [-a]         停止服务 [-a 全部服务]
-  down              移除全部容器
+  down [-v]         移除全部容器[-v 并且删除数据卷]
   ps                查看服务状态
   logs [-a]         查看服务日志 [-a 全部服务]
 
@@ -287,7 +287,7 @@ function main() {
         start)      docker_compose_start ;      exit 0  ;;
         restart)    docker_compose_restart $@;  exit 0  ;;
         stop)       docker_compose_stop $@ ;    exit 0  ;;
-        down)       docker_compose_down ;       exit 0  ;;
+        down)       docker_compose_down $@ ;    exit 0  ;;
         ps)         docker_compose_ps $@ ;      exit 0  ;;
         logs)       docker_compose_logs $@ ;    exit 0  ;;
         port)       docker_compose_port $@  ;   exit 0  ;;
