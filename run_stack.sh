@@ -9,6 +9,7 @@ docker_host_ip=""
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 # docker_stack_compose_dir=""
 docker_stack_compose_file="portainer/portainer-agent-stack.yml"
+[ -f $docker_stack_compose_file ] && DOCKER_COMPOSE_FILE="$docker_stack_compose_file" || DOCKER_COMPOSE_FILE="$docker_stack_compose_file (不存在)"
 docker_stack_name="portainer-swarm"
 
 string_placeholders="#####"
@@ -125,29 +126,38 @@ function docker_stack_services() {
     docker $docker_remote_arg stack services $docker_stack_name | sort -k 2
 }
 
-function docker_stack_ps() {
+#############################
+# docker service entrypoint #
+#############################
+function docker_service_choose() {
+    declare -A list
+    i=0
+    echo -e "序号  服务\n----------"
+    for docker_service_name in $(docker $docker_remote_arg stack services $docker_stack_name | grep -v NAME |awk '{print $2}' | sort -n)
+        do
+            i=$((i+1))
+            if [ $i -lt 10 ] ; then
+                j=' '$i
+                echo "$j.   $docker_service_name"
+            else
+                echo "$i.   $docker_service_name"
+            fi
+            list[$i]=$docker_service_name
+        done
+    echo 
+    read -p "选择服务，输入其序号，按回车执行： " cho
+    docker_service_choice=${list[$cho]}
+    echo
+}
+
+function docker_service_ps() {
     case $1 in
         "")
-            declare -A list
-            i=0
-            echo -e "序号  服务\n----------"
-            for docker_service_name in $(docker $docker_remote_arg stack services $docker_stack_name | grep -v NAME |awk '{print $2}' | sort -n)
-                do
-                    i=$((i+1))
-                    if [ $i -lt 10 ] ; then
-                        j=' '$i
-                        echo "$j.   $docker_service_name"
-                    else
-                        echo "$i.   $docker_service_name"
-                    fi
-                    list[$i]=$docker_service_name
-                done
-            echo 
-            read -p "输入待查看任务的服务序号： " cho
+            docker_service_choose
             while true
                 do
                     clear
-                    docker $docker_remote_arg service ps --no-trunc ${list[$cho]}
+                    docker $docker_remote_arg service ps --no-trunc $docker_service_choice
                     sleep 1
                 done
         ;;
@@ -160,38 +170,20 @@ function docker_stack_ps() {
                 done
         ;;
     esac
-
 }
 
-#############################
-# docker service entrypoint #
-#############################
 function docker_service_remove() {
     case $1 in 
     "")
-        declare -A list
-        i=0
-        echo -e "序号  服务\n----------"
-        for docker_service_name in $(docker $docker_remote_arg stack services $docker_stack_name | grep -v NAME |awk '{print $2}' | sort)
-            do
-                i=$((i+1))
-                if [ $i -lt 10 ] ; then
-                    j=' '$i
-                    echo "$j.   $docker_service_name"
-                else
-                    echo "$i.   $docker_service_name"
-                fi
-                list[$i]=$docker_service_name
-            done
-        echo 
-        read -p "输入待移除服务的序号，按回车执行： " cho
+        docker_service_choose
         echo -e "\n开始移除服务..."
-        docker $docker_remote_arg service rm "${list[$cho]}" 
+        docker $docker_remote_arg service rm $docker_service_choice 
     ;;
     -a) 
         read -p "确定移除 $docker_stack_name 服务栈?[y/N]: " cho
         if [ ! -z "$cho" ] ; then
             if [ $cho = 'y' -o $cho = 'Y'  ] ; then
+                echo -e "\n开始移除服务..."
                 docker $docker_remote_arg stack rm $docker_stack_name
             else 
                 exit 0
@@ -216,38 +208,26 @@ function docker_service_remove() {
     echo "移除完成"
 }
 
-function docker_service_redeploy() {
-    docker_service_remove
-    docker_stack_deploy
+function docker_service_update() {
+    docker_service_choose
+    echo -e "开始更新服务...\n"
+    docker $docker_remote_arg service update $docker_service_choice $@
 }
 
 function docker_service_logs() {
-    declare -A list
-    i=0
-    echo -e "序号  服务\n----------"
-    for docker_service_name in $(docker $docker_remote_arg stack services $docker_stack_name | grep -v NAME |awk '{print $2}' | sort -n)
-        do
-            i=$((i+1))
-            if [ $i -lt 10 ] ; then
-                j=' '$i
-                echo "$j.   $docker_service_name"
-            else
-                echo "$i.   $docker_service_name"
-            fi
-            list[$i]=$docker_service_name
-        done
-    echo 
-    read -p "输入待查看日志的服务序号，按回车执行： " cho
+    docker_service_choose
     read -p "要查询多久前到现在日志？  (单位：分钟 默认：全部日志)： " time_to_now
     [ -z $time_to_now ] && since_arg="" || since_arg="--since ${time_to_now}m"
+    echo
     read -p "预览或下载到本地文件  [ 1 预览 | 2 下载 ]（默认：预览）： " download_cho
     [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
+    echo
     case $download_cho in 
         1)  
-            docker $docker_remote_arg service logs -f $since_arg ${list[$cho]}    
+            docker $docker_remote_arg service logs -f $since_arg $docker_service_choice
         ;;
         2)  
-            docker $docker_remote_arg service logs $since_arg ${list[$cho]} &> $(date -d "-${time_to_now}minutes" "+%m%d-%H%M%S")to$(date "+%m%d-%H%M%S")_${list[$cho]}.log
+            docker $docker_remote_arg service logs $since_arg $docker_service_choice &> $(date -d "-${time_to_now}minutes" "+%m%d-%H%M%S")to$(date "+%m%d-%H%M%S")_${list[$cho]}.log
             echo "下载完成，保存在$(pwd)目录下"
         ;;
     esac
@@ -259,7 +239,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.1.0 , build: 2018-06-28 17:35:17
+Docker stack deploy script , version: 1.2.0 , build: 2018-07-10 16:04:44
 
 Usage: $0 Command [arg]
             
@@ -273,14 +253,14 @@ Commands:
   ls                查看各服务概况
   ps [-a]           查看各服务任务状态 [-a 全部服务任务状态]
   rm [-a]           移除中的服务 [-a 全部]
-  redeploy          强制重新部署服务
+  update            更新服务
   logs              查看服务日志
 
   -h, --help        显示此帮助页
 
-# 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
+# 以下是目标 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
 Docker Daemon: $DOCKER_HOST
-Compose File: $docker_stack_compose_file
+Compose File: $DOCKER_COMPOSE_FILE
 Stack Name: $docker_stack_name
 
 EOF_help
@@ -301,9 +281,9 @@ function main() {
         port)       docker_stack_port $@  ;     exit 0  ;;        
         deploy)     docker_stack_deploy  ;      exit 0  ;;
         ls)         docker_stack_services $@ ;  exit 0  ;;
-        ps)         docker_stack_ps $@ ;        exit 0  ;;
+        ps)         docker_service_ps $@ ;        exit 0  ;;
         rm)         docker_service_remove $@;   exit 0  ;;
-        redeploy)   docker_service_redeploy $@; exit 0  ;;
+        update)     docker_service_update $@; exit 0  ;;
         logs)       docker_service_logs ;       exit 0  ;;
         *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 0  ;;
     esac
