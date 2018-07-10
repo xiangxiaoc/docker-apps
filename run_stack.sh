@@ -123,7 +123,7 @@ function docker_stack_deploy() {
 }
 
 function docker_stack_services() {
-    docker $docker_remote_arg stack services $docker_stack_name | sort -k 2
+    docker $docker_remote_arg stack services $docker_stack_name $@ | sort -k 2 
 }
 
 #############################
@@ -231,7 +231,6 @@ function docker_service_logs() {
             echo "下载完成，保存在$(pwd)目录下"
         ;;
     esac
-        
 }
 
 ###################
@@ -239,7 +238,7 @@ function docker_service_logs() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.2.0 , build: 2018-07-10 16:04:44
+Docker stack deploy script , version: 1.2.1 , build: 2018-07-10 16:04:44
 
 Usage: $0 Command [arg]
             
@@ -275,15 +274,15 @@ function main() {
     case $main_command in 
         -h)         show_help ;                 exit 0  ;;
         --help)     show_help ;                 exit 0  ;;
-        init)       script_init $@ ;            exit 0  ;;
+        init)       script_init ;               exit 0  ;;
         save)       docker_image_save ;         exit 0  ;;
         load)       docker_image_load $@ ;      exit 0  ;;
         port)       docker_stack_port $@  ;     exit 0  ;;        
         deploy)     docker_stack_deploy  ;      exit 0  ;;
         ls)         docker_stack_services $@ ;  exit 0  ;;
-        ps)         docker_service_ps $@ ;        exit 0  ;;
+        ps)         docker_service_ps $@ ;      exit 0  ;;
         rm)         docker_service_remove $@;   exit 0  ;;
-        update)     docker_service_update $@; exit 0  ;;
+        update)     docker_service_update $@;   exit 0  ;;
         logs)       docker_service_logs ;       exit 0  ;;
         *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 0  ;;
     esac
