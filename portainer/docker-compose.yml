@@ -2,7 +2,7 @@ version: '3'
 services:
 
   portainer:
-    image: portainer/portainer:1.17.1
+    image: portainer/portainer:1.18.1
     ports:
       - "9000:9000"
     volumes:

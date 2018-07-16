@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+
   agent:
     image: portainer/agent:1.0.0
     environment:
@@ -10,6 +11,7 @@ services:
       # AGENT_PORT: 9001
       # LOG_LEVEL: debug
     volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - agent_network
@@ -22,11 +24,12 @@ services:
       mode: global
 
   portainer:
-    image: portainer/portainer:1.17.1
+    image: portainer/portainer:1.18.1
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
       - "9000:9000"
     volumes:
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
       - portainer_data:/data
     networks:
       - agent_network
