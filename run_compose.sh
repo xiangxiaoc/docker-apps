@@ -60,6 +60,10 @@ echo -e "初始化完成，即将根据 $([ -z $docker_compose_file_new ] && ech
 ###########################
 # image manage entrypoint #
 ###########################
+function docker_image_ls() {
+    docker $docker_remote_arg images
+}
+
 function docker_image_save() {
     now_time=$(date "+%Y-%m-%d_%H")
     mkdir ./images_bak_$now_time
@@ -242,13 +246,14 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.1.0 , build: 2018-07-06 15:45:04
+Docker-Compose deploy script , Version: 1.1.1 , build: 2018-07-16 19:55:39
 
 Usage: $0 Command [arg]
             
 Commands:
 
   init              脚本初始化
+  images            查看 docker host 上的镜像
   save              备份目前编排文件里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   build [-a]        构建镜像 [-a 全部服务]
@@ -280,6 +285,7 @@ function main() {
         -h)         show_help ;                 exit 0  ;;
         --help)     show_help ;                 exit 0  ;;
         init)       script_init ;               exit 0  ;;
+        images)     docker_image_ls ;           exit 0  ;;
         save)       docker_image_save ;         exit 0  ;;
         load)       docker_image_load $@ ;      exit 0  ;;
         build)      docker_image_build $@ ;     exit 0  ;;
