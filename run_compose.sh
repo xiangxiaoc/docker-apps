@@ -94,30 +94,40 @@ function docker_image_load() {
 function docker_image_build() {
     case $1 in
         "")
-            declare -A list
-            i=0
-            echo -e "序号  服务\n----------"
-            for docker_service_name in $(docker_compose_ps --services)
-                do
-                    i=$((i+1))
-                        if [ $i -lt 10 ] ; then
-                            j=' '$i
-                            echo "$j.   $docker_service_name"
-                        else
-                            echo "$i.   $docker_service_name"
-                        fi
-                    list[$i]=$docker_service_name
-                done
-            read -p "输入待构建服务镜像的序号： " cho
-            docker-compose $docker_remote_arg $docker_compose_file_arg build "${list[$cho]}" 
+            docker_service_choose
+            docker-compose $docker_remote_arg $docker_compose_file_arg build $docker_service_choice 
         ;;
-        "-a") docker-compose $docker_remote_arg $docker_compose_file_arg build    ;;
+        "-a") 
+            docker-compose $docker_remote_arg $docker_compose_file_arg build
+        ;;
     esac
 }
 
 ##################
 # docker-compose #
 ##################
+function docker_service_choose() {
+    declare -A list
+    i=0
+    echo -e "序号  服务\n----------"
+    for docker_service_name in $(docker_compose_ps --services | sort)
+        do
+            i=$((i+1))
+            if [ $i -lt 10 ] ; then
+                j=' '$i
+                echo "$j.   $docker_service_name"
+            else
+                echo "$i.   $docker_service_name"
+            fi
+            list[$i]=$docker_service_name
+        done
+    echo 
+    read -p "选择服务，输入其序号，按回车执行： " cho
+    docker_service_choice=${list[$cho]}
+    echo
+}
+
+
 function docker_compose_port() {
     yml_ports_line=$(sed -n "1,/ports:/=" $docker_compose_file | sed -n '$ p' )
     yml_ports_value_line=$(($yml_ports_line+1))
@@ -141,54 +151,38 @@ function docker_compose_up() {
 }
 
 function docker_compose_start() {
-    docker-compose $docker_remote_arg $docker_compose_file_arg start
+    case $1 in
+    "")
+        docker_service_choose
+        docker-compose $docker_remote_arg $docker_compose_file_arg start $docker_service_choice
+    ;;
+    "-a") 
+        docker-compose $docker_remote_arg $docker_compose_file_arg start
+    ;;
+    esac
 }
 
 function docker_compose_restart() {
     case $1 in
     "")
-    declare -A list
-    i=0
-    echo -e "序号  服务\n----------"
-    for docker_service_name in $(docker_compose_ps --services)
-        do
-            i=$((i+1))
-                if [ $i -lt 10 ] ; then
-                    j=' '$i
-                    echo "$j.   $docker_service_name"
-                else
-                    echo "$i.   $docker_service_name"
-                fi
-            list[$i]=$docker_service_name
-        done
-    read -p "输入待重启服务的序号： " cho
-    docker-compose $docker_remote_arg $docker_compose_file_arg restart "${list[$cho]}" 
+        docker_service_choose
+        docker-compose $docker_remote_arg $docker_compose_file_arg restart $docker_service_choice
     ;;
-    -a) docker-compose $docker_remote_arg $docker_compose_file_arg restart    ;;
+    "-a") 
+        docker-compose $docker_remote_arg $docker_compose_file_arg restart
+    ;;
     esac
 }
 
 function docker_compose_stop() {
     case $1 in
     "")
-    declare -A list
-    i=0
-    echo -e "序号  服务\n----------"
-    for docker_service_name in $(docker_compose_ps --services)
-        do
-            i=$((i+1))
-                if [ $i -lt 10 ] ; then
-                    j=' '$i
-                    echo "$j.   $docker_service_name"
-                else
-                    echo "$i.   $docker_service_name"
-                fi
-            list[$i]=$docker_service_name
-        done
-    read -p "输入待停止服务的序号： " cho
-    docker-compose $docker_remote_arg $docker_compose_file_arg stop "${list[$cho]}" 
+        docker_service_choose
+        docker-compose $docker_remote_arg $docker_compose_file_arg stop $docker_service_choice
     ;;
-    -a)  docker-compose $docker_remote_arg $docker_compose_file_arg stop  ;;
+    "-a")  
+        docker-compose $docker_remote_arg $docker_compose_file_arg stop
+    ;;
     esac
 }
 
@@ -203,40 +197,26 @@ function docker_compose_ps() {
 function docker_compose_logs() {
     case $1 in
     "") 
-        declare -A list
-        i=0
-        echo -e "序号  服务\n----------"
-        for docker_service_name in $(docker_compose_ps --services)
-            do
-                i=$((i+1))
-                if [ $i -lt 10 ] ; then
-                    j=' '$i
-                    echo "$j.   $docker_service_name"
-                else
-                    echo "$i.   $docker_service_name"
-                fi
-                list[$i]=$docker_service_name
-            done
-        echo
-        read -p "输入待查看日志的服务序号： " cho
+        docker_service_choose
         read -p "查看最近多少条日志？(默认：全部)： " tail
         [ -z $tail ] && tail_arg="--tail all" || tail_arg="--tail $tail"
         read -p "预览或下载到文件  [ 1 预览 | 2 下载 ]（默认：预览）： " download_cho
         [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
         case $download_cho in 
             1)  
-                docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg ${list[$cho]}    
+                docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg $docker_service_choice 
             ;;
             2)  
-                docker-compose $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${list[$cho]}_$(date "+%m%d-%H%M%S")_$tail.log
+                docker-compose $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${docker_service_choice}_$(date "+%m%d-%H%M%S")_$tail.log
                 echo "导出完成，保存在$(pwd)目录下"
             ;;
         esac
     ;;
-    -a) 
+    "-a") 
         read -p "查看最近多少条日志？(默认：全部)： " tail
         [ -z $tail ] && tail_arg="--tail all" || tail_arg="--tail $tail"
-        docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg   ;;
+        docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg   
+    ;;
     esac
 }
 
@@ -246,7 +226,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.1.1 , build: 2018-07-16 19:55:39
+Docker-Compose deploy script , Version: 1.1.2 , build: 2018-07-18 17:04:16
 
 Usage: $0 Command [arg]
             
@@ -259,11 +239,11 @@ Commands:
   build [-a]        构建镜像 [-a 全部服务]
   port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
   up                创建或重新创建容器，并启动
-  start             启动停止中的服务
+  start [-a]        启动停止中的服务
   restart [-a]      重启服务 [-a 全部服务]
   stop [-a]         停止服务 [-a 全部服务]
   down [-v]         移除全部容器[-v 并且删除数据卷]
-  ps                查看服务状态
+  ls                查看服务状态
   logs [-a]         查看服务日志 [-a 全部服务]
 
   -h, --help        显示此帮助页
@@ -294,7 +274,7 @@ function main() {
         restart)    docker_compose_restart $@;  exit 0  ;;
         stop)       docker_compose_stop $@ ;    exit 0  ;;
         down)       docker_compose_down $@ ;    exit 0  ;;
-        ps)         docker_compose_ps $@ ;      exit 0  ;;
+        ls)         docker_compose_ps $@ ;      exit 0  ;;
         logs)       docker_compose_logs $@ ;    exit 0  ;;
         port)       docker_compose_port $@  ;   exit 0  ;;
         *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 1  ;;
