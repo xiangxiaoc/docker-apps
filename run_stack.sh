@@ -232,13 +232,19 @@ function docker_service_logs() {
         ;;
     esac
 }
+############################
+# docker config entrypoint #
+############################
+function docker_config() {
+    docker $docker_remote_arg config $@
+}
 
 ###################
 # help entrypoint #
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.2.1 , build: 2018-07-10 16:13:24
+Docker stack deploy script , version: 1.3.0 , build: 20180727 1828
 
 Usage: $0 Command [arg]
             
@@ -248,6 +254,7 @@ Commands:
   save              备份当前编排文件里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]  
+  config            配置管理
   deploy            部署或更新服务栈
   ls                查看各服务概况
   ps [-a]           查看各服务任务状态 [-a 全部服务任务状态]
@@ -277,7 +284,8 @@ function main() {
         init)       script_init ;               exit 0  ;;
         save)       docker_image_save ;         exit 0  ;;
         load)       docker_image_load $@ ;      exit 0  ;;
-        port)       docker_stack_port $@  ;     exit 0  ;;        
+        port)       docker_stack_port $@  ;     exit 0  ;;
+        config)     docker_config $@     ;      exit 0  ;;        
         deploy)     docker_stack_deploy  ;      exit 0  ;;
         ls)         docker_stack_services $@ ;  exit 0  ;;
         ps)         docker_service_ps $@ ;      exit 0  ;;
