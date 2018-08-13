@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  gitlab-ce:
+    image: gitlab/gitlab-ce:11.1.4-ce.0
+    hostname: gitlab.example.com
+    ports:
+      - "8443:443"
+      - "80:80"
+      - "2222:22"
+    volumes:
+      - /mnt/data/gitlab/config:/etc/gitlab
+      - /mnt/data/gitlab/logs:/var/log/gitlab
+      - /mnt/data/gitlab/data:/var/opt/gitlab
+    restart: always
+    logging:
+      driver: none
