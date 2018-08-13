@@ -24,7 +24,7 @@ services:
       mode: global
 
   portainer:
-    image: portainer/portainer:1.18.1
+    image: portainer/portainer:1.19.1
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
       - "9000:9000"
