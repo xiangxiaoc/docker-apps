@@ -10,6 +10,7 @@ docker_host_ip=""
 docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 [ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
+dockerfile_file="*/build/*/Dockerfile"
 
 string_placeholders="#####"
 
@@ -65,13 +66,25 @@ function docker_image_ls() {
 }
 
 function docker_image_save() {
-    now_time=$(date "+%Y-%m-%d_%H")
-    mkdir ./images_bak_$now_time
-    for i in $(grep "image:" $docker_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u)
-        do
-            j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
-            docker $docker_remote_arg image save $i > ./images_bak_$now_time/$j
-        done
+    now_time=$(date "+%Y-%m-%d_%H%M")
+    case $1 in 
+    "")
+        mkdir ./images_bak_$now_time
+        for i in $( grep "image:" $docker_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u )
+            do
+                j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
+                docker $docker_remote_arg image save $i > ./images_bak_$now_time/$j
+            done
+    ;;
+    "-b")
+        mkdir ./images_$now_time
+        for i in $( grep "FROM" $dockerfile_file | awk '{print $NF}' | sort -u )
+            do
+                j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
+                docker $docker_remote_arg image save $i > ./images_$now_time/$j
+            done
+    ;;
+    esac
 }
 
 function docker_image_load() {
@@ -226,7 +239,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.1.2 , build: 2018-07-18 17:04:16
+Docker-Compose deploy script , Version: 1.2.0 , build: 2018-08-15 10:43:16
 
 Usage: $0 Command [arg]
             
@@ -234,7 +247,7 @@ Commands:
 
   init              脚本初始化
   images            查看 docker host 上的镜像
-  save              备份目前编排文件里面用到的镜像
+  save [-b]         备份目前编排文件里面用到的镜像 [备份构建镜像的基础镜像] 
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   build [-a]        构建镜像 [-a 全部服务]
   port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
@@ -266,7 +279,7 @@ function main() {
         --help)     show_help ;                 exit 0  ;;
         init)       script_init ;               exit 0  ;;
         images)     docker_image_ls ;           exit 0  ;;
-        save)       docker_image_save ;         exit 0  ;;
+        save)       docker_image_save $@;       exit 0  ;;
         load)       docker_image_load $@ ;      exit 0  ;;
         build)      docker_image_build $@ ;     exit 0  ;;
         up)         docker_compose_up ;         exit 0  ;;
