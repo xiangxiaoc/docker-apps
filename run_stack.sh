@@ -8,9 +8,9 @@ docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 # docker_stack_compose_dir=""
-docker_stack_compose_file="portainer/portainer-agent-stack.yml"
+docker_stack_compose_file="registry/swarm.yml"
 [ -f $docker_stack_compose_file ] && DOCKER_COMPOSE_FILE="$docker_stack_compose_file" || DOCKER_COMPOSE_FILE="$docker_stack_compose_file (不存在)"
-docker_stack_name="portainer-swarm"
+docker_stack_name="registry"
 
 string_placeholders="#####"
 
