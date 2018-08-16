@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  registry:
+    image: registry:2.6.2
+    ports:
+      - "5000:5000"
+    volumes:
+      - /mnt/registry_data:/var/lib/registry
+    restart: always
