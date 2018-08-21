@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  
+  nat123:
+    build: .
+    image: nat123:3.180623
+    volumes:
+      - nat123_data:/nat123/data
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+    tty: true
+    privileged: true
+
+volumes:
+  nat123_data:
+    driver: local
