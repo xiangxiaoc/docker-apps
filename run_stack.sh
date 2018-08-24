@@ -8,9 +8,9 @@ docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 # docker_stack_compose_dir=""
-docker_stack_compose_file="registry/swarm.yml"
+docker_stack_compose_file="portainer/portainer-agent-stack.yml"
 [ -f $docker_stack_compose_file ] && DOCKER_COMPOSE_FILE="$docker_stack_compose_file" || DOCKER_COMPOSE_FILE="$docker_stack_compose_file (不存在)"
-docker_stack_name="registry"
+docker_stack_name="portainer"
 
 string_placeholders="#####"
 
@@ -211,7 +211,7 @@ function docker_service_remove() {
 function docker_service_update() {
     docker_service_choose
     echo -e "开始更新服务...\n"
-    docker $docker_remote_arg service update $docker_service_choice $@
+    docker $docker_remote_arg service update --force $docker_service_choice $@
 }
 
 function docker_service_logs() {
@@ -244,7 +244,7 @@ function docker_config() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.3.0 , build: 20180727 1828
+Docker stack deploy script , version: 1.3.1 , build: 20180824 1116
 
 Usage: $0 Command [arg]
             
@@ -259,7 +259,7 @@ Commands:
   ls                查看各服务概况
   ps [-a]           查看各服务任务状态 [-a 全部服务任务状态]
   rm [-a]           移除中的服务 [-a 全部]
-  update            更新服务
+  restart           强制重启服务
   logs              查看服务日志
 
   -h, --help        显示此帮助页
@@ -290,7 +290,7 @@ function main() {
         ls)         docker_stack_services $@ ;  exit 0  ;;
         ps)         docker_service_ps $@ ;      exit 0  ;;
         rm)         docker_service_remove $@;   exit 0  ;;
-        update)     docker_service_update $@;   exit 0  ;;
+        restart)     docker_service_update $@;  exit 0  ;;
         logs)       docker_service_logs ;       exit 0  ;;
         *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 0  ;;
     esac
