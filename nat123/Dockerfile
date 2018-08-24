@@ -6,4 +6,7 @@ VOLUME [ "/nat123/data" ]
 
 WORKDIR /nat123/data
 
-CMD mono ../nat123linux.sh service
+ENV USERNAME= \
+    PASSWORD= 
+
+CMD mono ../nat123linux.sh autologin ${USERNAME} ${PASSWORD}
