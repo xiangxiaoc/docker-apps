@@ -14,7 +14,7 @@ services:
     logging:
       driver: json-file
       options:
-        max-file: '3'
+        max-file: '1'
         max-size: 10m
     deploy:
       mode: replicated
