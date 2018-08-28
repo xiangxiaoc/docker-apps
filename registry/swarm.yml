@@ -8,15 +8,21 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - registry_data:/var/lib/registry
+      - /mnt/registry_data:/var/lib/registry
+    logging:
+      driver: json-file
+      options:
+        max-file: '1'
+        max-size: 10m    
     deploy:
       restart_policy:
         condition: any
       placement:
         constraints:
-          - node.labels.gpu != nvidia
+          - node.role == manager
 
-volumes:
-  
-  registry_data:
-    driver: local
+networks:
+
+  default:
+    ipam:
+      driver: default
