@@ -2,9 +2,15 @@ version: '3.4'
 
 services:
   registry:
+    container_name: registry
     image: registry:2.6.2
     ports:
       - "5000:5000"
     volumes:
       - /mnt/registry_data:/var/lib/registry
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m    
     restart: always
