@@ -116,6 +116,18 @@ function docker_image_build() {
     esac
 }
 
+function docker_image_push() {
+    case $1 in
+        "")
+            docker_service_choose
+            docker-compose $docker_remote_arg $docker_compose_file_arg push $docker_service_choice
+        ;;
+        "-a")
+            docker-compose $docker_remote_arg $docker_compose_file_arg push
+        ;;
+    esac
+}
+
 ##################
 # docker-compose #
 ##################
@@ -239,7 +251,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.2.0 , build: 2018-08-15 10:43:16
+Docker-Compose deploy script , Version: 1.3.0 , build: 2018-08-28 16:04
 
 Usage: $0 Command [arg]
             
@@ -250,6 +262,7 @@ Commands:
   save [-b]         备份目前编排文件里面用到的镜像 [备份构建镜像的基础镜像] 
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   build [-a]        构建镜像 [-a 全部服务]
+  push [-a]         推到镜像仓库 [-a 全部服务]
   port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
   up                创建或重新创建容器，并启动
   start [-a]        启动停止中的服务
@@ -282,6 +295,7 @@ function main() {
         save)       docker_image_save $@;       exit 0  ;;
         load)       docker_image_load $@ ;      exit 0  ;;
         build)      docker_image_build $@ ;     exit 0  ;;
+        push)       docker_image_push $@ ;      exit 0  ;;
         up)         docker_compose_up ;         exit 0  ;;
         start)      docker_compose_start ;      exit 0  ;;
         restart)    docker_compose_restart $@;  exit 0  ;;
