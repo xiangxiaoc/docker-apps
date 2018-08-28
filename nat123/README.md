@@ -2,6 +2,6 @@
 
 监测公网 IP，可以在 nat123 官网上配置动态域名解析。
 
-## TODO
+## 运行之前
 
-目前无法使用 docker-compose 编排，因为其运行时需要在终端内交互输入验证信息。使用 `docker run -ti` 运行容器可以输入，正在联系官方，提供非交互式账户验证方案。
+更改 docker-compose.yml 中 USERNAME 和 PASSWORD 的值，USERNAME 是 nat123 用户名，PASSWORD 是密码。

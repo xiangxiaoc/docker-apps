@@ -5,6 +5,9 @@ services:
   nat123:
     build: .
     image: nat123:3.180623
+    environment:
+      - USERNAME=
+      - PASSWORD=
     volumes:
       - nat123_data:/nat123/data
     logging:
