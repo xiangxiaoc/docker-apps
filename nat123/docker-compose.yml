@@ -5,6 +5,7 @@ services:
   nat123:
     build: .
     image: nat123:3.180623
+    network_mode: host
     environment:
       - USERNAME=
       - PASSWORD=
@@ -19,5 +20,6 @@ services:
     privileged: true
 
 volumes:
+
   nat123_data:
     driver: local
