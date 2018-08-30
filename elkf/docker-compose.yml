@@ -3,7 +3,7 @@ services:
   elk:
     image: sebp/elk:624
     networks: 
-      - elk
+      - elkf
     ports:
       - "5601:5601"
       - "9200:9200"
@@ -19,7 +19,7 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:6.2.4
     networks: 
-      - elk
+      - elkf
     volumes:
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
