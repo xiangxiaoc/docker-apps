@@ -7,10 +7,10 @@
 docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
-docker_compose_file="compose/docker-compose.yml"
+docker_compose_file="cadvisor/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 [ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
-docker_stack_name=""
+docker_stack_name="cadvisor"
 [ -z $docker_stack_name ] && docker_stack_name_arg="" || docker_stack_name_arg="-p $docker_stack_name"
 [ -z $docker_stack_name ] && DOCKER_COMPOSE_STACK="未指定，默认使用 Compose File 所在目录名" || DOCKER_COMPOSE_STACK="$docker_stack_name"
 
@@ -246,7 +246,7 @@ function docker_compose_logs() {
                 docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg $docker_service_choice 
             ;;
             2)  
-                docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg $docker_service_choice &> ${docker_service_choice}_$(date "+%m%d-%H%M%S")_$tail.log
+                docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg $docker_service_choice &> ${docker_service_choice}_$(date "+%m月%d日-%H时%M分%S秒")_最近$tail条.log
                 echo "导出完成，保存在$(pwd)目录下"
             ;;
         esac
@@ -265,7 +265,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.1 , build: 2018-09-05 19:03
+Docker-Compose deploy script , Version: 1.3.2 , build: 2018-09-05 19:35
 
 Usage: $0 Command [arg]
             
