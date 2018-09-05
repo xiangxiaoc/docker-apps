@@ -7,10 +7,15 @@
 docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
-docker_compose_file="registry/docker-compose.yml"
+docker_compose_file="compose/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 [ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
+docker_stack_name=""
+[ -z $docker_stack_name ] && docker_stack_name_arg="" || docker_stack_name_arg="-p $docker_stack_name"
+[ -z $docker_stack_name ] && DOCKER_COMPOSE_STACK="未指定，默认使用 Compose File 所在目录名" || DOCKER_COMPOSE_STACK="$docker_stack_name"
+
 dockerfile_file="*/build/*/Dockerfile"
+
 
 string_placeholders="#####"
 
@@ -52,7 +57,16 @@ EOF_init
     fi
     echo
 
-echo -e "初始化完成，即将根据 $([ -z $docker_compose_file_new ] && echo $docker_compose_file || echo $docker_compose_file_new) 管理容器服务，请运行 $0 其他命令"
+    read -p "是否改变服务栈名称？[y/N]:(默认 N) " cho
+    if [ ! -z $cho ] ; then
+        if [ $cho = 'y' -o $cho = 'Y' ] ; then
+            read -p "输入服务栈名称： " docker_stack_name_new
+            sed -i  "/^docker_stack_name/ c docker_stack_name=\"$docker_stack_name_new\"" $0
+        fi
+    fi
+    echo
+
+echo -e "初始化完成，即将根据 $([ -z $docker_compose_file_new ] && echo $docker_compose_file || echo $docker_compose_file_new) 管理 $([ -z $docker_host_ip_new ] && echo $docker_host_ip || echo $docker_host_ip_new) $([ -z $docker_stack_name_new ] && echo $docker_stack_name || echo $docker_stack_name_new) 服务栈，请运行 $0 其他命令"
 
 }
 
@@ -172,17 +186,17 @@ function docker_compose_port() {
 
 function docker_compose_up() {
     echo -e "读取部署编排文件 ./$docker_compose_file \n开始创建容器 ... "
-    docker-compose $docker_remote_arg $docker_compose_file_arg up -d
+    docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg up -d
 }
 
 function docker_compose_start() {
     case $1 in
     "")
         docker_service_choose
-        docker-compose $docker_remote_arg $docker_compose_file_arg start $docker_service_choice
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg start $docker_service_choice
     ;;
     "-a") 
-        docker-compose $docker_remote_arg $docker_compose_file_arg start
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg start
     ;;
     esac
 }
@@ -191,10 +205,10 @@ function docker_compose_restart() {
     case $1 in
     "")
         docker_service_choose
-        docker-compose $docker_remote_arg $docker_compose_file_arg restart $docker_service_choice
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg restart $docker_service_choice
     ;;
     "-a") 
-        docker-compose $docker_remote_arg $docker_compose_file_arg restart
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg restart
     ;;
     esac
 }
@@ -203,20 +217,20 @@ function docker_compose_stop() {
     case $1 in
     "")
         docker_service_choose
-        docker-compose $docker_remote_arg $docker_compose_file_arg stop $docker_service_choice
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg stop $docker_service_choice
     ;;
     "-a")  
-        docker-compose $docker_remote_arg $docker_compose_file_arg stop
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg stop
     ;;
     esac
 }
 
 function docker_compose_down() {
-    docker-compose $docker_remote_arg $docker_compose_file_arg down $@
+    docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg down $@
 }
 
 function docker_compose_ps() {
-    docker-compose $docker_remote_arg $docker_compose_file_arg ps $@
+    docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg ps $@
 }
 
 function docker_compose_logs() {
@@ -229,10 +243,10 @@ function docker_compose_logs() {
         [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
         case $download_cho in 
             1)  
-                docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg $docker_service_choice 
+                docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg $docker_service_choice 
             ;;
             2)  
-                docker-compose $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg ${list[$cho]} &> ${docker_service_choice}_$(date "+%m%d-%H%M%S")_$tail.log
+                docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg $docker_service_choice &> ${docker_service_choice}_$(date "+%m%d-%H%M%S")_$tail.log
                 echo "导出完成，保存在$(pwd)目录下"
             ;;
         esac
@@ -240,7 +254,7 @@ function docker_compose_logs() {
     "-a") 
         read -p "查看最近多少条日志？(默认：全部)： " tail
         [ -z $tail ] && tail_arg="--tail all" || tail_arg="--tail $tail"
-        docker-compose $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg   
+        docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg   
     ;;
     esac
 }
@@ -251,7 +265,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.0 , build: 2018-08-28 16:04
+Docker-Compose deploy script , Version: 1.3.1 , build: 2018-09-05 19:03
 
 Usage: $0 Command [arg]
             
@@ -277,6 +291,7 @@ Commands:
 # 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
 Docker Daemon： $DOCKER_HOST
 Compose File： $DOCKER_COMPOSE_FILE
+Compose Stack name: $DOCKER_COMPOSE_STACK
 
 EOF_help
 }
