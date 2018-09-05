@@ -219,7 +219,7 @@ function docker_service_logs() {
     read -p "要查询多久前到现在日志？  (单位：分钟 默认：全部日志)： " time_to_now
     [ -z $time_to_now ] && since_arg="" || since_arg="--since ${time_to_now}m"
     echo
-    read -p "预览或下载到本地文件  [ 1 预览 | 2 下载 ]（默认：预览）： " download_cho
+    read -p "打印预览或下载到当前目录？  [ 1 预览 | 2 下载 ]（默认：1 预览）： " download_cho
     [ -z $download_cho ] && download_cho="1" || download_cho=$download_cho
     echo
     case $download_cho in 
@@ -227,8 +227,8 @@ function docker_service_logs() {
             docker $docker_remote_arg service logs -f $since_arg $docker_service_choice
         ;;
         2)  
-            docker $docker_remote_arg service logs $since_arg $docker_service_choice &> $(date -d "-${time_to_now}minutes" "+%m%d-%H%M%S")to$(date "+%m%d-%H%M%S")_${list[$cho]}.log
-            echo "下载完成，保存在$(pwd)目录下"
+            docker $docker_remote_arg service logs $since_arg $docker_service_choice &> ${docker_service_choice}_$([ -z ${time_to_now} ] && echo "" || echo $(date -d "-${time_to_now}minutes" "+%m月%d日_%H时%M分%S秒"))至$(date "+%H时%M分%S秒").log
+            echo "下载完成"
         ;;
     esac
 }
@@ -244,7 +244,7 @@ function docker_config() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.3.1 , build: 20180824 1116
+Docker stack deploy script , version: 1.3.2 , build: 2018-09-05 19:59
 
 Usage: $0 Command [arg]
             
