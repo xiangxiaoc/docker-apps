@@ -246,7 +246,7 @@ function docker_compose_logs() {
                 docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs -f $tail_arg $docker_service_choice 
             ;;
             2)  
-                docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg $docker_service_choice &> ${docker_service_choice}_$(date "+%m月%d日-%H时%M分%S秒")_最近$tail条.log
+                docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg $docker_service_choice &> ${docker_service_choice}_$(date "+%m月%d日_%H时%M分%S秒")$([ -z $tail ] && echo "" || echo "_最近$tail条").log
                 echo "导出完成"
             ;;
         esac
