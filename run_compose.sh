@@ -247,7 +247,7 @@ function docker_compose_logs() {
             ;;
             2)  
                 docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg logs --no-color $tail_arg $docker_service_choice &> ${docker_service_choice}_$(date "+%m月%d日-%H时%M分%S秒")_最近$tail条.log
-                echo "导出完成，保存在$(pwd)目录下"
+                echo "导出完成"
             ;;
         esac
     ;;
