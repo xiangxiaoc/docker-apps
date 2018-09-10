@@ -5,7 +5,9 @@ version: '3.4'
 services:
 
   kibana:
-    image: kibana:5.6.11
+    build:
+      context: build/kibana
+    image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:5.6.11
     ports:
       - "5601:5601"
     environment:
