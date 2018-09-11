@@ -7,10 +7,10 @@
 docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
-docker_compose_file="portainer/docker-compose.yml"
+docker_compose_file="elk/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 [ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
-docker_stack_name="portainer"
+docker_stack_name="elk"
 [ -z $docker_stack_name ] && docker_stack_name_arg="" || docker_stack_name_arg="-p $docker_stack_name"
 [ -z $docker_stack_name ] && DOCKER_COMPOSE_STACK="未指定，默认使用 Compose File 所在目录名" || DOCKER_COMPOSE_STACK="$docker_stack_name"
 
