@@ -265,7 +265,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.2 , build: 2018-09-05 19:35
+Docker-Compose deploy script , Version: 1.3.3 , build: 2018-09-13 18:38:32
 
 Usage: $0 Command [arg]
             
@@ -291,7 +291,7 @@ Commands:
 # 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
 Docker Daemon： $DOCKER_HOST
 Compose File： $DOCKER_COMPOSE_FILE
-Compose Stack name: $DOCKER_COMPOSE_STACK
+Compose Stack Name: $DOCKER_COMPOSE_STACK
 
 EOF_help
 }

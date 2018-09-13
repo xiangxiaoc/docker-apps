@@ -244,7 +244,7 @@ function docker_config() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.3.2 , build: 2018-09-05 19:59
+Docker stack deploy script , version: 1.3.3 , build: 2018-09-13 18:38:20
 
 Usage: $0 Command [arg]
             
@@ -267,7 +267,7 @@ Commands:
 # 以下是目标 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
 Docker Daemon: $DOCKER_HOST
 Compose File: $DOCKER_COMPOSE_FILE
-Stack Name: $docker_stack_name
+Swarm Stack Name: $docker_stack_name
 
 EOF_help
 }
