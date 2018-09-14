@@ -1,36 +1,51 @@
 version: '2.3'
 
 services:
-  cuda_virtual-machine-1:
-    build: .
-    image: cuda_virtual-machine:1.0.1
-    runtime: nvidia
+  # cuda_virtual-machine-1:
+  #   build: .
+  #   image: cuda_virtual-machine:1.0.1
+  #   runtime: nvidia
+  #   ports:
+  #     - "2201:22"
+  #   volumes:
+  #     - /home/docker/homedir-1:/root
+  #   tty: true
+  #   restart: always
+  #   privileged: true
+
+  # cuda_virtual-machine-2:
+  #   image: cuda_virtual-machine:1.0.1
+  #   runtime: nvidia
+  #   ports:
+  #     - "2202:22"
+  #   volumes:
+  #     - /home/docker/homedir-2:/root
+  #   tty: true
+  #   restart: always
+  #   privileged: true
+
+  # cuda_virtual-machine-3:
+  #   image: cuda_virtual-machine:1.0.1
+  #   runtime: nvidia
+  #   ports:
+  #     - "2203:22"
+  #   volumes:
+  #     - /home/docker/homedir-3:/root
+  #   tty: true
+  #   restart: always
+  #   privileged: true
+
+  virtual_machine-cuda_92-zyf:
+    build:
+      context: .
+      dockerfile: Dockerfile-cuda_9.2
+    image: cuda:9.2-cudnn7-devel-ubuntu18.04
     ports:
-      - "2201:22"
+      - "2204:22"
     volumes:
-      - /home/docker/homedir-1:/root
+      - /home/zhuyf:/root
     tty: true
     restart: always
     privileged: true
 
-  cuda_virtual-machine-2:
-    image: cuda_virtual-machine:1.0.1
-    runtime: nvidia
-    ports:
-      - "2202:22"
-    volumes:
-      - /home/docker/homedir-2:/root
-    tty: true
-    restart: always
-    privileged: true
-
-  cuda_virtual-machine-3:
-    image: cuda_virtual-machine:1.0.1
-    runtime: nvidia
-    ports:
-      - "2203:22"
-    volumes:
-      - /home/docker/homedir-3:/root
-    tty: true
-    restart: always
-    privileged: true
+# volumes:
