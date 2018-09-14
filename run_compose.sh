@@ -7,10 +7,10 @@
 docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
-docker_compose_file="elk/docker-compose.yml"
+docker_compose_file="cuda_sshd/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 [ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
-docker_stack_name="elk"
+docker_stack_name="cuda"
 [ -z $docker_stack_name ] && docker_stack_name_arg="" || docker_stack_name_arg="-p $docker_stack_name"
 [ -z $docker_stack_name ] && DOCKER_COMPOSE_STACK="未指定，默认使用 Compose File 所在目录名" || DOCKER_COMPOSE_STACK="$docker_stack_name"
 
@@ -186,7 +186,7 @@ function docker_compose_port() {
 
 function docker_compose_up() {
     echo -e "读取部署编排文件 ./$docker_compose_file \n开始创建容器 ... "
-    docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg up -d
+    docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg up -d $@
 }
 
 function docker_compose_start() {
@@ -265,7 +265,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.3 , build: 2018-09-13 18:38:32
+Docker-Compose deploy script , Version: 1.3.4 , build: 2018-09-14 16:05:51
 
 Usage: $0 Command [arg]
             
@@ -311,7 +311,7 @@ function main() {
         load)       docker_image_load $@ ;      exit 0  ;;
         build)      docker_image_build $@ ;     exit 0  ;;
         push)       docker_image_push $@ ;      exit 0  ;;
-        up)         docker_compose_up ;         exit 0  ;;
+        up)         docker_compose_up $@ ;      exit 0  ;;
         start)      docker_compose_start ;      exit 0  ;;
         restart)    docker_compose_restart $@;  exit 0  ;;
         stop)       docker_compose_stop $@ ;    exit 0  ;;
