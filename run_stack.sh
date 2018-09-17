@@ -8,9 +8,9 @@ docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
 # docker_stack_compose_dir=""
-docker_stack_compose_file="portainer/portainer-agent-stack.yml"
+docker_stack_compose_file="registry/swarm.yml"
 [ -f $docker_stack_compose_file ] && DOCKER_COMPOSE_FILE="$docker_stack_compose_file" || DOCKER_COMPOSE_FILE="$docker_stack_compose_file (不存在)"
-docker_stack_name="portainer"
+docker_stack_name="registry"
 
 string_placeholders="#####"
 
@@ -123,7 +123,8 @@ function docker_stack_deploy() {
 }
 
 function docker_stack_services() {
-    docker $docker_remote_arg stack services $docker_stack_name $@ | sort -k 2 
+    watch -n 1 \
+    docker $docker_remote_arg stack services $docker_stack_name $@
 }
 
 #############################
@@ -154,20 +155,12 @@ function docker_service_ps() {
     case $1 in
         "")
             docker_service_choose
-            while true
-                do
-                    clear
-                    docker $docker_remote_arg service ps --no-trunc $docker_service_choice
-                    sleep 1
-                done
+            watch -n 1 \
+            docker $docker_remote_arg service ps --no-trunc $docker_service_choice
         ;;
         "-a")
-            while true
-                do
-                    clear
-                    docker $docker_remote_arg stack ps --no-trunc $docker_stack_name  | sort -k 2
-                    sleep 5
-                done
+            watch -n 1 \
+            docker $docker_remote_arg stack ps --no-trunc $docker_stack_name
         ;;
     esac
 }
@@ -244,7 +237,7 @@ function docker_config() {
 ###################
 function show_help() {
 cat << EOF_help
-Docker stack deploy script , version: 1.3.3 , build: 2018-09-13 18:38:20
+Docker stack deploy script , version: 1.3.4 , build: 2018-09-17 16:46:32
 
 Usage: $0 Command [arg]
             

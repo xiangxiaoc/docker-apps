@@ -230,6 +230,7 @@ function docker_compose_down() {
 }
 
 function docker_compose_ps() {
+    watch -n 1 \
     docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg ps $@
 }
 
@@ -265,7 +266,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.4 , build: 2018-09-14 16:05:51
+Docker-Compose deploy script , Version: 1.3.5 , build: 2018-09-17 16:46:42
 
 Usage: $0 Command [arg]
             
