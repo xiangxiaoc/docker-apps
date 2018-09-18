@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+
+  fluentd:
+    container_name: fluentd
+    image: fluent/fluentd
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt/data/fluentd_data:/fluentd/log
+      # - ./config/fluent.conf:/fluentd/etc/fluent.conf
+    logging:
+      driver: json-file
+      options:
+        max-file: '1'
+        max-size: '20m'
