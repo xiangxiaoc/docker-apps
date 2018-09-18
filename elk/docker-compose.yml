@@ -36,6 +36,18 @@ services:
     # restart: always
     tty: true
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.2.4
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/log:/var/log:ro
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+
 volumes:
   elasticsearch_data:
     driver: local
