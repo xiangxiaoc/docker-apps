@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+
+  mongo:
+    image: mongo:3
+    ports:
+      - "27017"
+    # volumes:
+    #   - mongo
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+  
+  elasticsearch:
+    image: elasticsearch:2
+    ports:
+      - "9200"
+    command: elasticsearch -Des.cluster.name="graylog"
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+
+  graylog:
+    image: graylog2/server:2.4.6-1
+    ports:
+      - "9000:9000"
+      - "12201:12201/udp"
+    environment:
+      - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9000/api
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+    volumes:
+      - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
