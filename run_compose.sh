@@ -149,7 +149,7 @@ function docker_service_choose() {
     declare -A list
     i=0
     echo -e "序号  服务\n----------"
-    for docker_service_name in $(docker_compose_ps --services | sort)
+    for docker_service_name in $(docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg ps --services | sort)
         do
             i=$((i+1))
             if [ $i -lt 10 ] ; then
@@ -266,7 +266,7 @@ function docker_compose_logs() {
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.5 , build: 2018-09-17 16:46:42
+Docker-Compose deploy script , Version: 1.3.6 , build: 2018-09-20 15:23:43
 
 Usage: $0 Command [arg]
             
