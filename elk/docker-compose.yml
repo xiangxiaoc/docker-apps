@@ -12,6 +12,8 @@ services:
       - "5601:5601"
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
     depends_on:
       - elasticsearch
     restart: always
@@ -21,6 +23,7 @@ services:
     ports:
       - "9200:9200"
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
       # - ./config/elasticsearch:/usr/share/elasticsearch/config
     restart: always
@@ -30,6 +33,7 @@ services:
     ports:
       - "9600:9600"
     volumes:
+      - /etc/localtime:/etc/localtime:ro    
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ./config/logstash/logstash.conf:/logstash.conf
     command: ["-f","/logstash.conf"]
@@ -39,6 +43,7 @@ services:
   filebeat:
     image: docker.elastic.co/beats/filebeat:6.2.4
     volumes:
+      - /etc/localtime:/etc/localtime:ro    
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/log:/var/log:ro
