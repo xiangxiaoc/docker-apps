@@ -3,7 +3,7 @@ version: '3.4'
 services:
 
   mongo:
-    image: mongo:3
+    image: mongo:3.6.7
     ports:
       - "27017"
     # volumes:
@@ -15,7 +15,7 @@ services:
         max-size: 10m
   
   elasticsearch:
-    image: elasticsearch:2
+    image: elasticsearch:2.4.6
     ports:
       - "9200"
     command: elasticsearch -Des.cluster.name="graylog"
@@ -28,10 +28,10 @@ services:
   graylog:
     image: graylog2/server:2.4.6-1
     ports:
-      - "9000:9000"
+      - "9999:9000"
       - "12201:12201/udp"
     environment:
-      - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9000/api
+      - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9999/api
       - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
       - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
     volumes:
