@@ -17,3 +17,7 @@
 ### 准备
 
 请确保您的 "docker daemon" 已经启用 "swarm mode"，并且 docker-ce version >= '17.12.0'
+
+## Compose File Format
+
+默认的编排文件格式版本可能过高，结合 docker-ce 或者 docker-compose 的版本适当降低编排文件格式版本
