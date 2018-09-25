@@ -1,5 +1,3 @@
-# stack.yml for Beats Elasticsearch Kibana
-
 version: '3.4'
 
 services:
@@ -14,6 +12,11 @@ services:
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
       - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: kibana
     depends_on:
       - elasticsearch
     restart: always
@@ -26,6 +29,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
       # - ./config/elasticsearch:/usr/share/elasticsearch/config
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: elasticsearch
     restart: always
 
   logstash:
@@ -34,24 +42,29 @@ services:
       - "9600:9600"
     volumes:
       - /etc/localtime:/etc/localtime:ro    
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - ./config/logstash/logstash.conf:/logstash.conf
+      # - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /mnt/data/fluentd_data:/log:ro
+      - ./config/logstash/file.conf:/logstash.conf
     command: ["-f","/logstash.conf"]
-    # restart: always
-    tty: true
-
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:6.2.4
-    volumes:
-      - /etc/localtime:/etc/localtime:ro    
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/log:/var/log:ro
     logging:
       driver: json-file
       options:
         max-file: '3'
-        max-size: 10m
+        max-size: 10m    
+    restart: always
+
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:6.2.4
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro    
+  #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/log:/var/log:ro
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-file: '3'
+  #       max-size: 10m
 
 volumes:
   elasticsearch_data:
