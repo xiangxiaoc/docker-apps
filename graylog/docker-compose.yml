@@ -7,26 +7,28 @@ services:
     ports:
       - "27017"
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - mongo_db:/data/db
       - mongo_configdb:/data/configdb
     logging:
-      driver: json-file
+      driver: gelf
       options:
-        max-file: '3'
-        max-size: 10m
+        gelf-address: udp://localhost:12201
+        tag: mongo
   
   elasticsearch:
     image: elasticsearch:2.4.6
     ports:
       - "9200"
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
     command: elasticsearch -Des.cluster.name="graylog"
     logging:
-      driver: json-file
+      driver: gelf
       options:
-        max-file: '3'
-        max-size: 10m
+        gelf-address: udp://localhost:12201
+        tag: elasticsearch
 
   graylog:
     image: graylog2/server:2.4.6-1
@@ -38,13 +40,14 @@ services:
       - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
       - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - graylog_data:/usr/share/graylog/data
       - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf
     logging:
       driver: json-file
       options:
         max-file: '3'
-        max-size: 10m
+        max-size: '10m'
 
 volumes:
   mongo_db:
