@@ -13,10 +13,10 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
     logging:
-      driver: fluentd
+      driver: json-file
       options:
-        fluentd-address: localhost:24224
-        tag: kibana
+        max-file: '3'
+        max-size: '10m'
     depends_on:
       - elasticsearch
     restart: always
@@ -30,10 +30,10 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
       # - ./config/elasticsearch:/usr/share/elasticsearch/config
     logging:
-      driver: fluentd
+      driver: json-file
       options:
-        fluentd-address: localhost:24224
-        tag: elasticsearch
+        max-file: '3'
+        max-size: '10m'
     restart: always
 
   logstash:
