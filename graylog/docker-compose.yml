@@ -42,7 +42,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - graylog_data:/usr/share/graylog/data
-      - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf
+      - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf:ro
     logging:
       driver: json-file
       options:
