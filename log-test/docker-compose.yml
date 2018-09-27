@@ -1,2 +1,21 @@
 version: '3'
 
+services:
+  
+  log_pusher-a:
+    image: busybox:1.29.2
+    command: sh -c 'while true;do echo "This is a log from log_pusher-a";sleep 10;done'
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+        tag: log_pusher-a
+
+  log_pusher-b:
+    image: busybox:1.29.2
+    command: sh -c 'while true;do echo "This is a log from log_pusher-b";sleep 10;done'
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://localhost:12201
+        tag: log_pusher-b
