@@ -3,7 +3,8 @@ version: '3.4'
 services:
   
   nat123:
-    build: .
+    build: 
+      context: build
     image: nat123:3.180623
     network_mode: host
     environment:

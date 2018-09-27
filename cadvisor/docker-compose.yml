@@ -2,7 +2,7 @@ version: '3'
 services:
 
   cadvisor:
-    image: google/cadvisor:v0.30.2
+    image: google/cadvisor:v0.31.0
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw 

@@ -12,6 +12,9 @@ services:
       - /mnt/data/gitlab/config:/etc/gitlab
       - /mnt/data/gitlab/logs:/var/log/gitlab
       - /mnt/data/gitlab/data:/var/opt/gitlab
-    restart: always
     logging:
-      driver: none
+      driver: json-file
+      options:
+        max-file: '1'
+        max-size: 10m
+    restart: always
