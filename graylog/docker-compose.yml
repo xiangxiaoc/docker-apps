@@ -15,25 +15,35 @@ services:
       options:
         gelf-address: udp://localhost:12201
         tag: mongo
+    restart: always
   
   elasticsearch:
-    image: elasticsearch:2.4.6
+    image: elasticsearch:5.6.12
     ports:
       - "9200"
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
-    command: elasticsearch -Des.cluster.name="graylog"
     logging:
       driver: gelf
       options:
         gelf-address: udp://localhost:12201
         tag: elasticsearch
+    restart: always
 
   graylog:
-    image: graylog2/server:2.4.6-1
+    image: graylog/graylog:2.4
     ports:
       - "9999:9000"
+      - "514:514"
+      - "514:514/udp"
+      - "12201:12201"
       - "12201:12201/udp"
     environment:
       - GRAYLOG_WEB_ENDPOINT_URI=http://0.0.0.0:9999/api
@@ -48,6 +58,7 @@ services:
       options:
         max-file: '3'
         max-size: '10m'
+    restart: on-failure
 
 volumes:
   mongo_db:
