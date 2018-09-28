@@ -1,19 +1,19 @@
 version: '2.3'
 
 services:
-  # cuda_virtual-machine-1:
+  # virtual_machine-1:
   #   build: .
   #   image: cuda_virtual-machine:1.0.1
-  #   runtime: nvidia
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=0
   #   ports:
   #     - "2201:22"
   #   volumes:
   #     - /home/docker/homedir-1:/root
   #   tty: true
   #   restart: always
-  #   privileged: true
 
-  # cuda_virtual-machine-2:
+  # virtual_machine-2:
   #   image: cuda_virtual-machine:1.0.1
   #   runtime: nvidia
   #   ports:
@@ -22,9 +22,8 @@ services:
   #     - /home/docker/homedir-2:/root
   #   tty: true
   #   restart: always
-  #   privileged: true
 
-  # cuda_virtual-machine-3:
+  # virtual_machine-3:
   #   image: cuda_virtual-machine:1.0.1
   #   runtime: nvidia
   #   ports:
@@ -33,7 +32,6 @@ services:
   #     - /home/docker/homedir-3:/root
   #   tty: true
   #   restart: always
-  #   privileged: true
 
   virtual_machine-cuda_92-zyf:
     build:
@@ -46,6 +44,5 @@ services:
       - /home/zhuyf:/root
     tty: true
     restart: always
-    privileged: true
 
 # volumes:
