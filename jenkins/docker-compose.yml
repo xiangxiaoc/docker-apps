@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+
+  jenkins:
+    # image: jenkins:2.60.3
+    image: jenkinsci/jenkins:lts
+    network_mode: host
+    # ports:
+    #   - '8080:8080'
+    #   - '50000:50000'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ~/jenkins_home:/var/jenkins_home
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: '10m'
+
+# volumes:
+
+#   jenkins_data:
