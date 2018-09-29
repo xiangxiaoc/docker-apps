@@ -1,10 +1,19 @@
 version: '3'
 
 services:
+
+  # json-file-creater-a:
+  #   image: busybox:1.29.2
+  #   command: sh -c 'while true;do echo "This is a log from log_pusher-a";sleep 5;done'
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-file: '1'
+  #       max-size: '1m'
   
   gelf-log_pusher-a:
     image: busybox:1.29.2
-    command: sh -c 'while true;do echo "This is a log from log_pusher-a";sleep 5;done'
+    command: sh -c 'while true;do echo -e "This is a log from log_pusher-a \n This is a next line";sleep 5;done'
     logging:
       driver: gelf
       options:
@@ -13,7 +22,7 @@ services:
 
   gelf-log_pusher-b:
     image: busybox:1.29.2
-    command: sh -c 'while true;do echo "This is a log from log_pusher-b";sleep 1;done'
+    command: sh -c 'while true;do echo -e "This is a log from log_pusher-b \n This is a next line";sleep 1;done'
     logging:
       driver: gelf
       options:
