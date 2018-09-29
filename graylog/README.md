@@ -6,6 +6,13 @@
 
 在 `config/graylog.conf` 内提供了详细的配置
 
+官方默认配置文件下载
+
+```sh
+wget https://raw.githubusercontent.com/Graylog2/graylog-docker/2.4/config/graylog.conf
+wget https://raw.githubusercontent.com/Graylog2/graylog-docker/2.4/config/log4j2.xml
+```
+
 配置时区
 
 ```conf
