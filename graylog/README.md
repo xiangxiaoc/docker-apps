@@ -2,6 +2,10 @@
 
 `GRAYLOG_WEB_ENDPOINT_URI` 必须修改为宿主机真实 IP ，在是客户端指向 api 的地址
 
+## docker-compose.yml 环境变量配置
+
+每个配置选项都可以通过环境变量设置。只需在参数名称前加上前缀GRAYLOG_，并将其全部用大写字母表示。
+
 ## 配置文件
 
 在 `config/graylog.conf` 内提供了详细的配置
@@ -27,3 +31,12 @@ root_timezone = Asia/Shanghai
 > Graylog 集群每个节点有自己独立的 Journal，扩展 Graylog 本身节点数量不但可以提升日志处理速度，还可以提升队列缓存的容量。
 >
 > 当 Elastic 写入出现瓶颈，Journal 的队列长度会一直增长，Graylog 设置了俩个阀值，当积压的日志超过 12 小时未处理，或者占用磁盘超过 5G 就会开始丢弃新接收到的日志。通过配置 message_journal_max_age 和 message_journal_max_size 可以修改。Graylog 还提供了 API 查询状态 可以和负载均衡系统集成。
+
+## 扩展插件
+
+docker-compose.yml 示例
+
+```yaml
+volumes:
+  - ./graylog/plugin/graylog-plugin-auth-sso-2.3.0.jar:/usr/share/graylog/plugin/graylog-plugin-auth-sso-2.3.0.jar
+```
