@@ -19,6 +19,7 @@ services:
         max-size: 10m
     tty: true
     privileged: true
+    restart: always
 
 volumes:
 
