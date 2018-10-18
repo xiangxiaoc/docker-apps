@@ -1,11 +1,12 @@
-FROM kibana:5.6.11
+FROM kibana:6.4.2
+
+USER root
 
 ADD Kibana_Hanization.tar.xz /
 
 WORKDIR /Kibana_Hanization
 
-RUN apt update && \
-    apt install -y --no-install-recommends python && \
-    python main.py /usr/share/kibana && \
-    rm -rf /Kibana_Hanization && \
-    apt purge -y --auto-remove python
+RUN python main.py /usr/share/kibana && \
+    rm -rf /Kibana_Hanization 
+
+USER kibana

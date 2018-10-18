@@ -6,7 +6,7 @@ filebeat.prospectors:
     - /var/lib/docker/containers/*/*.log
 
 output.elasticsearch:
-  hosts: ["elk:9200"]
+  hosts: ["elasticsearch:9200"]
 
 # setup.kibana:
 #   host: "elk:5601"

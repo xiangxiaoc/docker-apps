@@ -3,9 +3,9 @@ version: '3.4'
 services:
 
   kibana:
-    # build:
-    #   context: build/kibana
-    image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:5.6.11
+    build:
+      context: build/kibana
+    image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:6.4.2
     ports:
       - "5601:5601"
     environment:
@@ -15,14 +15,14 @@ services:
     logging:
       driver: json-file
       options:
-        max-file: '3'
+        max-file: '1'
         max-size: '10m'
     depends_on:
       - elasticsearch
     restart: always
 
   elasticsearch:
-    image: elasticsearch:5.6.11
+    image: elasticsearch:6.4.2
     ports:
       - "9200:9200"
     volumes:
@@ -32,39 +32,39 @@ services:
     logging:
       driver: json-file
       options:
-        max-file: '3'
+        max-file: '1'
         max-size: '10m'
     restart: always
 
-  logstash:
-    image: logstash:5.6.11
-    ports:
-      - "9600:9600"
+  # logstash:
+  #   image: logstash:5.6.11
+  #   ports:
+  #     - "9600:9600"
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro    
+  #     # - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /mnt/data/fluentd_data:/log:ro
+  #     - ./config/logstash/file.conf:/logstash.conf
+  #   command: ["-f","/logstash.conf"]
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-file: '1'
+  #       max-size: '10m'
+  #   restart: always
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.4.2
     volumes:
       - /etc/localtime:/etc/localtime:ro    
-      # - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /mnt/data/fluentd_data:/log:ro
-      - ./config/logstash/file.conf:/logstash.conf
-    command: ["-f","/logstash.conf"]
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
     logging:
       driver: json-file
       options:
         max-file: '1'
-        max-size: 10m    
+        max-size: '10m'
     restart: always
-
-  # filebeat:
-  #   image: docker.elastic.co/beats/filebeat:6.2.4
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro    
-  #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
-  #     - /var/log:/var/log:ro
-  #   logging:
-  #     driver: json-file
-  #     options:
-  #       max-file: '3'
-  #       max-size: 10m
 
 volumes:
   elasticsearch_data:
