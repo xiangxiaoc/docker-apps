@@ -2,32 +2,34 @@ version: '3'
 
 services:
 
-  # json-file-creater-a:
-  #   image: busybox:1.29.2
-  #   command: sh -c 'while true;do echo "This is a log from log_pusher-a";sleep 5;done'
-  #   logging:
-  #     driver: json-file
-  #     options:
-  #       max-file: '1'
-  #       max-size: '1m'
+  json-file_creater-a:
+    image: busybox:1.29.2
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    command: sh -c 'while true;do echo "`date` This is a log from log_pusher-a"; sleep 5; done'
+    logging:
+      driver: json-file
+      options:
+        max-file: '1'
+        max-size: '1m'
   
-  gelf-log_pusher-a:
-    image: busybox:1.29.2
-    command: sh -c 'while true;do echo -e "This is a log from log_pusher-a \n This is a next line";sleep 5;done'
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
-        tag: log_pusher-a
+  # gelf-log_pusher-a:
+  #   image: busybox:1.29.2
+  #   command: sh -c 'while true;do echo -e "This is a log from log_pusher-a \n This is a next line";sleep 5;done'
+  #   logging:
+  #     driver: gelf
+  #     options:
+  #       gelf-address: udp://localhost:12201
+  #       tag: log_pusher-a
 
-  gelf-log_pusher-b:
-    image: busybox:1.29.2
-    command: sh -c 'while true;do echo -e "This is a log from log_pusher-b \n This is a next line";sleep 1;done'
-    logging:
-      driver: gelf
-      options:
-        gelf-address: udp://localhost:12201
-        tag: log_pusher-b
+  # gelf-log_pusher-b:
+  #   image: busybox:1.29.2
+  #   command: sh -c 'while true;do echo -e "This is a log from log_pusher-b \n This is a next line";sleep 1;done'
+  #   logging:
+  #     driver: gelf
+  #     options:
+  #       gelf-address: udp://localhost:12201
+  #       tag: log_pusher-b
 
   # fluentd-log_pusher-a:
   #   image: busybox:1.29.2

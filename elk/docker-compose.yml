@@ -5,7 +5,8 @@ services:
   kibana:
     build:
       context: build/kibana
-    image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:6.4.2
+    # image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:6.4.2
+    image: kibana:6.4.2
     ports:
       - "5601:5601"
     environment:
@@ -13,10 +14,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
     logging:
-      driver: json-file
-      options:
-        max-file: '1'
-        max-size: '10m'
+      # driver: json-file
+      # options:
+      #   max-file: '1'
+      #   max-size: '10m'
+      driver: none
     depends_on:
       - elasticsearch
     restart: always
@@ -30,10 +32,11 @@ services:
       - elasticsearch_data:/usr/share/elasticsearch/data
       # - ./config/elasticsearch:/usr/share/elasticsearch/config
     logging:
-      driver: json-file
-      options:
-        max-file: '1'
-        max-size: '10m'
+      # driver: json-file
+      # options:
+      #   max-file: '1'
+      #   max-size: '10m'
+      driver: none
     restart: always
 
   # logstash:
@@ -57,13 +60,14 @@ services:
     image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/filebeat:6.4.2
     volumes:
       - /etc/localtime:/etc/localtime:ro    
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./config/filebeat/docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers
     logging:
-      driver: json-file
-      options:
-        max-file: '1'
-        max-size: '10m'
+      # driver: json-file
+      # options:
+      #   max-file: '1'
+      #   max-size: '10m'
+      driver: none
     restart: always
 
 volumes:
