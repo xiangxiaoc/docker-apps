@@ -6,6 +6,10 @@ services:
     ports:
       - '3306:3306'
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /usr/share/zoneinfo:/usr/share/zoneinfo:ro
+      - ./my.cnf:/etc/my.cnf
+      - ./my.cnf.d/remote.cnf:/etc/my.cnf.d/remote.cnf
       - db_data:/var/lib/mysql
 
 volumes:
