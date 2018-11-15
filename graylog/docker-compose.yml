@@ -11,10 +11,10 @@ services:
       - mongo_db:/data/db
       - mongo_configdb:/data/configdb
     logging:
-      driver: gelf
+      driver: json-file
       options:
-        gelf-address: udp://localhost:12201
-        tag: mongo
+        max-file: '1'
+        max-size: '10m'
     restart: always
   
   elasticsearch:
@@ -31,10 +31,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
     logging:
-      driver: gelf
+      driver: json-file
       options:
-        gelf-address: udp://localhost:12201
-        tag: elasticsearch
+        max-file: '1'
+        max-size: '10m'
     restart: always
 
   graylog:
@@ -52,7 +52,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - graylog_data:/usr/share/graylog/data
-      - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf:ro
+      - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf
     logging:
       driver: json-file
       options:
