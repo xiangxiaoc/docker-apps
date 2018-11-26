@@ -37,14 +37,14 @@ services:
       - /usr/lib/zabbix/alertscripts
     restart: always    
 
-  zabbix-java-gateway:
-    image: zabbix/zabbix-java-gateway:alpine-4.0.1
-    # image: zabbix/zabbix-java-gateway:ubuntu-4.0.1
-    # image: zabbix/zabbix-java-gateway:centos-4.0.1
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    restart: always
+  # zabbix-java-gateway:
+  #   image: zabbix/zabbix-java-gateway:alpine-4.0.1
+  #   # image: zabbix/zabbix-java-gateway:ubuntu-4.0.1
+  #   # image: zabbix/zabbix-java-gateway:centos-4.0.1
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
+  #   restart: always
 
   zabbix-web-nginx-mysql:
     image: zabbix/zabbix-web-nginx-mysql:alpine-4.0.1
