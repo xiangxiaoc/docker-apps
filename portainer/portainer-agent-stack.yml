@@ -50,6 +50,11 @@ services:
 networks:
   agent_network:
     driver: overlay
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/24
+
 
 volumes:
   portainer_data:
