@@ -97,7 +97,7 @@ function docker_image_save() {
             do
                 if [ ${i:0:1} == '$' ]
                 then
-                    echo "Dockerfile 内 FROM 的镜像是个变量 $i，尝试使用 $0 save -d 备份 $docker_compose_file 中的 base_image"
+                    echo "Dockerfile 内 FROM 的镜像是个变量 $i，尝试使用 $0 save -c 备份 $docker_compose_file 中的 base_image"
                 else
                     j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
                     docker $docker_remote_arg image save $i > ./base_images_bak_$now_time/$j
