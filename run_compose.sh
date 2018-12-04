@@ -95,12 +95,13 @@ function docker_image_save() {
         mkdir ./base_images_bak_$now_time
         for i in $( grep "FROM" $dockerfile_file | awk '{print $NF}' | sort -u )
             do
-                if [ $i != '${base_image}' ] ; then
+                if [ ${i:0:1} == '$' ]
+                then
+                    echo "Dockerfile 内 FROM 的镜像是个变量 $i，尝试使用 $0 save -d 备份 $docker_compose_file 中的 base_image"
+                else
                     j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
                     docker $docker_remote_arg image save $i > ./base_images_bak_$now_time/$j
                     [ $? -eq 0 ] && echo "$i 已导出为 $j" || echo "$i 导出失败"
-                else
-                    echo "Dockerfile内FROM的镜像是个变量 $i，尝试使用 $0 save -d 备份 $docker_compose_file 中的 base_image"
                 fi
             done
     ;;
