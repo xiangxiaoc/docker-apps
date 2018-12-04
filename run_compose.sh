@@ -106,7 +106,7 @@ function docker_image_save() {
     ;;
     "-c")
         mkdir ./base_images_from_compose_bak_$now_time
-        for i in $( grep "base_image:" $docker_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u )
+        for i in $( grep "base_image=" $docker_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u | cut -d '=' -f 2 )
             do
                 j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
                 docker $docker_remote_arg image save $i > ./base_images_from_compose_bak_$now_time/$j
