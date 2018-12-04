@@ -80,7 +80,7 @@ function docker_image_ls() {
 }
 
 function docker_image_save() {
-    now_time=$(date "+%Y-%m-%d_%H%M")
+    now_time=$(date "+%Y-%m-%d_%H-%M")
     case $1 in 
     "")
         mkdir ./images_bak_$now_time
@@ -88,14 +88,29 @@ function docker_image_save() {
             do
                 j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
                 docker $docker_remote_arg image save $i > ./images_bak_$now_time/$j
+                [ $? -eq 0 ] && echo "$i 已导出为 $j" || echo "$i 导出失败"
             done
     ;;
     "-b")
-        mkdir ./images_$now_time
+        mkdir ./base_images_bak_$now_time
         for i in $( grep "FROM" $dockerfile_file | awk '{print $NF}' | sort -u )
             do
+                if [ $i != '${base_image}' ] ; then
+                    j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
+                    docker $docker_remote_arg image save $i > ./base_images_bak_$now_time/$j
+                    [ $? -eq 0 ] && echo "$i 已导出为 $j" || echo "$i 导出失败"
+                else
+                    echo "Dockerfile内FROM的镜像是个变量 $i，尝试使用 $0 save -d 备份 $docker_compose_file 中的 base_image"
+                fi
+            done
+    ;;
+    "-c")
+        mkdir ./base_images_from_compose_bak_$now_time
+        for i in $( grep "base_image:" $docker_compose_file | sed 's/#//' |  awk '{print $2}' | sort -u )
+            do
                 j=$(echo $i | sed "s/:/_/g;s/\//-/g" )
-                docker $docker_remote_arg image save $i > ./images_$now_time/$j
+                docker $docker_remote_arg image save $i > ./base_images_from_compose_bak_$now_time/$j
+                [ $? -eq 0 ] && echo "$i 已导出为 $j" || echo "$i 导出失败"
             done
     ;;
     esac
@@ -260,13 +275,18 @@ function docker_compose_logs() {
     esac
 }
 
+function docker_compose_bash() {
+    docker_service_choose
+    docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg exec $docker_service_choice bash
+}
+
 ###################
 # help entrypoint #
 ###################
 function show_help() {
 cat << EOF_help
 
-Docker-Compose deploy script , Version: 1.3.6 , build: 2018-09-20 15:23:43
+Docker-Compose Deploy Script , Version: 1.4.0 , Build: 2018-12-04 14:18:37
 
 Usage: $0 Command [arg]
             
@@ -274,7 +294,7 @@ Commands:
 
   init              脚本初始化
   images            查看 docker host 上的镜像
-  save [-b]         备份目前编排文件里面用到的镜像 [备份构建镜像的基础镜像] 
+  save [-b|-c]         备份目前编排文件里面用到的镜像 [备份构建镜像的基础镜像]|[备份从编排文件中制定的基础镜像]
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
   build [-a]        构建镜像 [-a 全部服务]
   push [-a]         推到镜像仓库 [-a 全部服务]
@@ -283,9 +303,10 @@ Commands:
   start [-a]        启动停止中的服务
   restart [-a]      重启服务 [-a 全部服务]
   stop [-a]         停止服务 [-a 全部服务]
-  down [-v]         移除全部容器[-v 并且删除数据卷]
+  down [-v]         移除全部容器 [-v 并且删除数据卷]
   ls                查看服务状态
   logs [-a]         查看服务日志 [-a 全部服务]
+  bash              使用bash与容器交互
 
   -h, --help        显示此帮助页
 
@@ -306,6 +327,7 @@ function main() {
     case $main_command in 
         -h)         show_help ;                 exit 0  ;;
         --help)     show_help ;                 exit 0  ;;
+        help)       show_help ;                 exit 0  ;;
         init)       script_init ;               exit 0  ;;
         images)     docker_image_ls ;           exit 0  ;;
         save)       docker_image_save $@;       exit 0  ;;
@@ -319,6 +341,7 @@ function main() {
         down)       docker_compose_down $@ ;    exit 0  ;;
         ls)         docker_compose_ps $@ ;      exit 0  ;;
         logs)       docker_compose_logs $@ ;    exit 0  ;;
+        bash)       docker_compose_bash ;;
         port)       docker_compose_port $@  ;   exit 0  ;;
         *)  echo "需要执行命令，后面加上 --help 查看可执行命令的更多信息" ;  exit 1  ;;
     esac
