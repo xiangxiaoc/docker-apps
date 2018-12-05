@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
 
@@ -20,27 +20,30 @@ services:
       driver: json-file
       options:
         max-file: '3'
-        max-size: 10m
+        max-size: '10m'
     deploy:
       mode: global
       # placement:
       #   constraints: [node.platform.os == linux]
 
-  portainer-web:
+  web:
     image: portainer/portainer:1.19.2
     command: -H tcp://tasks.agent:9001 --tlsskipverify
     ports:
-      - "9000:9000"
+      - target: 9000
+        published: 9000
+        protocol: tcp
+        mode: host # host|ingress
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - portainer_data:/data
+      - web_data:/data
     networks:
       - agent_network
     logging:
       driver: json-file
       options:
         max-file: '3'
-        max-size: 10m
+        max-size: '10m'
     deploy:
       mode: replicated
       replicas: 1
@@ -57,4 +60,4 @@ networks:
 
 
 volumes:
-  portainer_data:
+  web_data:
