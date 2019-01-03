@@ -9,8 +9,8 @@ services:
       GITLAB_OMNIBUS_CONFIG: "external_url 'http://my.domain.com/'; gitlab_rails['lfs_enabled'] = true;"
     ports:
       - "8443:443"
-      - "8086:80"
-      - "2222:22"
+      - "80:80"
+      - "22:22"
     volumes:
       - /mnt/data/gitlab/config:/etc/gitlab
       - /mnt/data/gitlab/logs:/var/log/gitlab
