@@ -1,0 +1,17 @@
+version: '3'
+
+services: 
+  redis-server:
+    container_name: redis-server
+    image: redis
+    restart: always
+    
+  redis-web:
+    image: tenstartups/redis-commander
+    container_name: redis-web
+    restart: always
+    ports:
+      - 8081:8081
+    command: --redis-host=redis-server --redis-port=6379
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
