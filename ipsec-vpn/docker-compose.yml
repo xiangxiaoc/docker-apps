@@ -1,0 +1,18 @@
+version: '3'
+
+services: 
+  container_name: ipsec-vpn-server
+  image: hwdsl2/ipsec-vpn-server
+  environment: 
+    - VPN_IPSEC_PSK=your_ipsec_pre_shared_key
+    - VPN_USER=your_vpn_username
+    - VPN_PASSWORD=your_vpn_password
+  env_file: 
+    - vpn-addl-account.env
+  ports: 
+    - 500:500/udp
+    - 4500:4500/udp
+  volumes: 
+    - /lib/modules:/lib/modules:ro
+  privileged: true
+  
