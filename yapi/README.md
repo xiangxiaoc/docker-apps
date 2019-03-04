@@ -1,0 +1,2 @@
+- 默认用户名: admin@admin.com
+- 密码: ymfe.org

@@ -1,0 +1,50 @@
+version: '3'
+services: 
+  db:
+    container_name: yapi-db
+    restart: always
+    image: mongo
+    # environment: 
+      # MONGO_INITDB_ROOT_USERNAME: root
+      # MONGO_INITDB_ROOT_PASSWORD: root
+      # MONGO_INITDB_DATABASE: yapi
+    volumes: 
+      - /data/db
+      - /data/configdb
+
+  db_web_ui:
+    container_name: yapi-db_web_ui
+    restart: always
+    image: mongo-express
+    ports: 
+      - '8081:8081'
+    environment: 
+      ME_CONFIG_OPTIONS_EDITORTHEME: 'default'
+      ME_CONFIG_BASICAUTH_USERNAME: 'admin'
+      ME_CONFIG_BASICAUTH_PASSWORD: 'admin'
+      # ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+      ME_CONFIG_MONGODB_SERVER: db
+      ME_CONFIG_MONGODB_PORT: 27017
+      # ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      # ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      # ME_CONFIG_SITE_SSL_ENABLED: 'false'
+      # ME_CONFIG_SITE_SSL_CRT_PATH: ''
+      # ME_CONFIG_SITE_SSL_KEY_PATH: ''
+
+  yapi:
+    build: 
+      context: .
+      dockerfile: yapi.Dockerfile
+    image: yapi
+    container_name: yapi
+    # image: node:10.15.2-alpine
+    ports: 
+      - '9090:9090'
+      - '3000:3000'
+    volumes: 
+      - yapi-data:/my-yapi
+    # command: yapi server
+    command: node /my-yapi/vendors/server/app.js
+
+volumes: 
+  yapi-data:
