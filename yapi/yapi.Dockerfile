@@ -1,6 +1,6 @@
 FROM node:10.15.2-alpine
 
-RUN apk add git python
+RUN apk add git python make
 
 RUN mkdir yapi &&\
     cd yapi &&\
