@@ -1,0 +1,12 @@
+version: '3' 
+services: 
+  nexus:
+    container_name: nexus
+    image: sonatype/nexus
+    ports: 
+      - 8081:8081
+    volumes: 
+      - nexus-data:/sonatype-work
+    restart: always
+volumes: 
+  nexus:
