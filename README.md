@@ -6,15 +6,11 @@
 
 这是一个基于docker-compose编排软件编写的脚本，基本上支持docker-compose主要的命令操作。
 
-### 准备
-
 在使用前请务必确认 /usr/local/bin/docker-compose 文件存在，并且 docker-compose version >= '1.21.0' ，您可以从 docker 官方 github 上下载，也可以点击[Docker 套装快速安装](https://github.com/xiangxiaoc/docker-ce_docker-compose_nvidia-docker2)，来获取 docker-compose
 
 ## run_stack.sh
 
 这是一个基于 `docker stack COMMAND` 命令的管理编排脚本，同时也整合了一些 `docker service` 的命令，方便统一操作。
-
-### 准备
 
 请确保您的 "docker daemon" 已经启用 "swarm mode"，并且 docker-ce version >= '17.12.0'
 
