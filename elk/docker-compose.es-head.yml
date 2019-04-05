@@ -1,0 +1,7 @@
+version: '3'
+services: 
+  elasticsearch-head:
+    container_name: elasticsearch-head
+    image: mobz/elasticsearch-head:5
+    ports: 
+      - '9100:9100'
