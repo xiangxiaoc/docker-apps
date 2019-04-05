@@ -1,17 +1,24 @@
-version: '3.7'
+version: '2.2'
 
 services:
 
   jenkins:
     container_name: jenkins
-    image: jenkins:2.60.3
+    image: jenkins/jenkins:2.164.1
     network_mode: bridge
     ports:
       - '8080:8080'
       - '50000:50000'
     volumes:
-      # - /etc/localtime:/etc/localtime:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /usr/bin/docker:/usr/bin/docker:ro
+      # chmod 666 /var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /usr/bin/kubectl:/usr/bin/kubectl:ro
       - jenkins_data:/var/jenkins_home
+    mem_limit: 3g
+    cpus: 2
     logging:
       driver: json-file
       options:
