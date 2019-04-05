@@ -1,3 +1,4 @@
+# chown 200 -R /sonatype-work
 version: '3' 
 services: 
   nexus:
@@ -9,4 +10,4 @@ services:
       - nexus-data:/sonatype-work
     restart: always
 volumes: 
-  nexus:
+  nexus-data:
