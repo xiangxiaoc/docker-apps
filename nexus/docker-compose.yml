@@ -4,6 +4,7 @@ services:
   nexus:
     container_name: nexus
     image: sonatype/nexus
+    network_mode: bridge    
     ports: 
       - 8081:8081
     volumes: 
