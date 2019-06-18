@@ -9,3 +9,6 @@ elasticsearch.hosts: [ "http://elasticsearch:9200" ]
 xpack.monitoring.ui.container.elasticsearch.enabled: true
 # Chinese UI
 i18n.locale: "zh-CN"
+# elastalert
+elastalert-kibana-plugin.serverHost: elastalert
+elastalert-kibana-plugin.serverPort: 3030

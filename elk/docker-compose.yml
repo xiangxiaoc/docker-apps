@@ -3,10 +3,10 @@ version: '2.3'
 services:
 
   kibana:
-    # build:
-    #   context: build/kibana
-    # image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:6.4.2
-    image: kibana:7.1.1
+    build:
+      context: build/kibana
+    image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:7.1.1-elastalert
+    # image: kibana:7.1.1
     ports:
       - "5601:5601"
     # environment:
