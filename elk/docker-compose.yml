@@ -1,42 +1,51 @@
-version: '3.4'
+version: '2.3'
 
 services:
 
   kibana:
-    build:
-      context: build/kibana
+    # build:
+    #   context: build/kibana
     # image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/kibana:6.4.2
-    image: kibana:6.4.2
+    image: kibana:7.1.1
     ports:
       - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+    # environment:
+    #   ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-    logging:
-      # driver: json-file
-      # options:
-      #   max-file: '1'
-      #   max-size: '10m'
-      driver: none
+      # - /etc/localtime:/etc/localtime:ro
+      # - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
+      - c:/GitHub/docker-compose/elk/config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    # logging:
+    #   driver: json-file
+    #   options:
+    #     max-file: '1'
+    #     max-size: '10m'
     depends_on:
       - elasticsearch
     restart: always
 
   elasticsearch:
-    image: elasticsearch:6.4.2
+    container_name: elasticsearch
+    image: elasticsearch:7.1.1
     ports:
       - "9200:9200"
+    command: ["bash", "-c", "ulimit -l unlimited && sysctl -w vm.max_map_count=262144 && chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data && exec su elasticsearch docker-entrypoint.sh"]
+    privileged: true
+    # 单节点配置
+    environment: 
+      - discovery.type=single-node
+    # environment: 
+    #   - cluster.initial_master_nodes=elasticsearch-0
+    #   - cluster.name=docker-compose-es-cluster
     volumes:
-      - /etc/localtime:/etc/localtime:ro
+      # - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
       # - ./config/elasticsearch:/usr/share/elasticsearch/config
-    logging:
-      # driver: json-file
-      # options:
-      #   max-file: '1'
-      #   max-size: '10m'
-      driver: none
+    # logging:
+    #   driver: json-file
+    #   options:
+    #     max-file: '1'
+    #     max-size: '10m'
     restart: always
 
   # logstash:
@@ -56,19 +65,31 @@ services:
   #       max-size: '10m'
   #   restart: always
 
-  filebeat:
-    image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/filebeat:6.4.2
-    volumes:
-      - /etc/localtime:/etc/localtime:ro    
-      - ./config/filebeat/docker.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers
-    logging:
-      # driver: json-file
-      # options:
-      #   max-file: '1'
-      #   max-size: '10m'
-      driver: none
-    restart: always
+  # filebeat:
+  #   image: registry.cn-hangzhou.aliyuncs.com/xiangxiaoc/filebeat:6.4.2
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro    
+  #     - ./config/filebeat/docker.yml:/usr/share/filebeat/filebeat.yml:ro
+  #     - /var/lib/docker/containers:/var/lib/docker/containers
+  #   logging:
+  #     driver: json-file
+  #     options:
+  #       max-file: '1'
+  #       max-size: '10m'
+  #   restart: always
+
+  elastalert:
+    container_name: elastalert
+    image: bitsensor/elastalert:3.0.0-beta.0
+    ports: 
+      - "3030:3030"
+      - "3333:3333"
+    volumes: 
+      - c:/GitHub/docker-compose/elk/config/elastalert/config.json:/opt/elastalert-server/config/config.json
+      - c:/GitHub/docker-compose/elk/config/elastalert/elastalert.yaml:/opt/elastalert/config.yaml
+    depends_on: 
+      - elasticsearch
+    restart: 'no'
 
 volumes:
   elasticsearch_data:
