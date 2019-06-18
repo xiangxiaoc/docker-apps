@@ -1,12 +1,3 @@
-FROM kibana:6.4.2
+FROM kibana:7.1.1
 
-USER root
-
-ADD Kibana_Hanization.tar.xz /
-
-WORKDIR /Kibana_Hanization
-
-RUN python main.py /usr/share/kibana && \
-    rm -rf /Kibana_Hanization 
-
-USER kibana
+RUN ./bin/kibana-plugin install https://github.com/bitsensor/elastalert-kibana-plugin/releases/download/1.0.4/elastalert-kibana-plugin-1.0.4-7.1.1.zip
