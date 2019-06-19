@@ -1,0 +1,18 @@
+name: Large Number of 500 Responses
+es_host: elasticsearch
+es_port: 9200
+index: "*"
+filter:
+  - term:
+      level: ERROR
+type: frequency
+num_events: 1
+timeframe:
+  hours: 1
+alert:
+  - email
+email: 
+  - xxx@qq.com
+smtp_host: smtp.qq.com
+smtp_port: 465
+smtp_auth_file: /opt/elastalert/smtp_auth.yaml
