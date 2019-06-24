@@ -1,28 +1,30 @@
-version: '3'
+version: '2'
 
 volumes: 
-  nextcloud_data:
-  db_data:
+  app-data:
+  db-data:
 
 services: 
 
-  cloud_disk:
-    image: nextcloud:15.0.0-apache
+  app:
+    image: nextcloud
     container_name: nextcloud
     ports: 
-      - 80:80
+      - 8085:80
     volumes: 
-      - nextcloud_data:/var/www/html
+      - app-data:/var/www/html
     restart: always
 
   db:
-    image: mariadb # 2018年12月24日 10.3.11
+    container_name: mariadb
+    image: mariadb
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     environment: 
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
       - MYSQL_PASSWORD=nextcloud
     volumes: 
-      - db_data:/var/lib/mysql
+      - db-data:/var/lib/mysql
     restart: always
     
