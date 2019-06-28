@@ -17,3 +17,7 @@
 ## Compose File Format
 
 默认的编排文件格式版本可能过高，结合 docker-ce 或者 docker-compose 的版本适当降低编排文件格式版本
+
+## 其他注意事项
+
+中国区registry mirror https://registry.docker-cn.com
