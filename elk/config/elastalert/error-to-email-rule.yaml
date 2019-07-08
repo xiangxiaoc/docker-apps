@@ -1,10 +1,10 @@
-name: Large Number of 500 Responses
+name: level ERROR
 es_host: elasticsearch
 es_port: 9200
-index: "*"
+index: "some-index"
 filter:
   - term:
-      level: ERROR
+      level: "ERROR"
 type: frequency
 num_events: 1
 timeframe:
