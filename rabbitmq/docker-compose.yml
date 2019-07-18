@@ -1,0 +1,17 @@
+version: '2.3'
+services: 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.6.16-management
+    hostname: rabbitmq-0.rabbitmq
+    environment: 
+      - RABBITMQ_DEFAULT_USER=xzz
+      - RABBITMQ_DEFAULT_PASS=Xzz901!2019
+      - RABBITMQ_NODENAME=rabbit
+    ports: 
+      - 5672:5672
+      - 15672:15672
+    network_mode: bridge
+    volumes: 
+      - ./mnesia:/var/lib/rabbitmq/mnesia
+    
