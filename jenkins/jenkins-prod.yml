@@ -1,0 +1,28 @@
+version: '2.2'
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:2.204
+    network_mode: bridge
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      # Use host's docker client and socket to communicate with host's docker deamon
+      - /usr/bin/docker:/usr/bin/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # chmod 666 /var/run/docker.sock
+      # Use host's kubectl and remember to copy the kubeconfig to /var/jenkins_home/.kube/ of container
+      - /usr/bin/kubectl:/usr/bin/kubectl:ro
+      - jenkins_data:/var/jenkins_home
+    mem_limit: 4g
+    cpus: 2
+    logging:
+      driver: json-file
+      options:
+        max-file: '1'
+        max-size: '10m'
+    restart: always
+volumes:
+  jenkins_data:
