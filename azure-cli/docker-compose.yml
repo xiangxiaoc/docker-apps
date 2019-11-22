@@ -1,0 +1,11 @@
+version: '2.2'
+services: 
+  azure-cli:
+    image: mcr.microsoft.com/azure-cli
+    volumes: 
+      - my-azure-profile:/root/.azure
+    stdin_open: true
+    tty: true
+volumes: 
+  my-azure-profile:
+    driver: local
