@@ -340,7 +340,7 @@ Docker 服务器:  $DOCKER_HOST
 6. down         停止并删除当前编排组
 
 EOF_menu
-read -p "Choose the number of command: " cho
+read -p "选择功能，输入其序号: " cho
 case $cho in
 '0') script_init ;;
 '1') docker_image_ls ;;
