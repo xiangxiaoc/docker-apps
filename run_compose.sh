@@ -7,10 +7,10 @@
 docker_host_ip=""
 [ -z $docker_host_ip ] && docker_remote_arg="" || docker_remote_arg="-H ${docker_host_ip}:2375"
 [ -z $docker_host_ip ] && DOCKER_HOST="本机" || DOCKER_HOST="${docker_host_ip}:2375"
-docker_compose_file="elk/docker-compose.yml"
+docker_compose_file="portainer/docker-compose.yml"
 [ -z $docker_compose_file ] && docker_compose_file_arg="" || docker_compose_file_arg="-f $docker_compose_file"
 [ -z $docker_compose_file ] && DOCKER_COMPOSE_FILE="未指定，默认使用 ./docker-compose.yml" || DOCKER_COMPOSE_FILE="$docker_compose_file"
-docker_stack_name="elk"
+docker_stack_name="portainer"
 [ -z $docker_stack_name ] && docker_stack_name_arg="" || docker_stack_name_arg="-p $docker_stack_name"
 [ -z $docker_stack_name ] && DOCKER_COMPOSE_STACK="未指定，默认使用 Compose File 所在目录名" || DOCKER_COMPOSE_STACK="$docker_stack_name"
 
@@ -66,7 +66,7 @@ EOF_init
     fi
     echo
 
-echo -e "初始化完成，即将根据 $([ -z $docker_compose_file_new ] && echo $docker_compose_file || echo $docker_compose_file_new) 管理 $([ -z $docker_host_ip_new ] && echo $docker_host_ip || echo $docker_host_ip_new) $([ -z $docker_stack_name_new ] && echo $docker_stack_name || echo $docker_stack_name_new) 服务栈，请运行 $0 其他命令"
+echo -e "初始化完成，即将使用 $([ -z $docker_compose_file_new ] && echo $docker_compose_file || echo $docker_compose_file_new) 管理 $([ -z $docker_host_ip_new ] && echo $docker_host_ip || echo $docker_host_ip_new) $([ -z $docker_stack_name_new ] && echo $docker_stack_name || echo $docker_stack_name_new) 编排组，请运行 $0 其他命令"
 
 }
 
@@ -246,7 +246,6 @@ function docker_compose_down() {
 }
 
 function docker_compose_ps() {
-    watch -n 1 \
     docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg ps $@
 }
 
@@ -279,6 +278,7 @@ function docker_compose_logs() {
 function docker_compose_bash() {
     docker_service_choose
     docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg exec $docker_service_choice bash
+    [ $? -ne 0 ] && docker-compose $docker_stack_name_arg $docker_remote_arg $docker_compose_file_arg exec $docker_service_choice sh
 }
 
 ###################
@@ -305,18 +305,51 @@ Commands:
   restart [-a]      重启服务 [-a 全部服务]
   stop [-a]         停止服务 [-a 全部服务]
   down [-v]         移除全部容器 [-v 并且删除数据卷]
-  ls                查看服务状态
+  ps                查看服务状态
   logs [-a]         查看服务日志 [-a 全部服务]
   bash              使用bash与容器交互
 
   -h, --help        显示此帮助页
 
 # 以下是 Docker 主机地址和正在使用的编排文件，如需变更执行 $0 init 进行初始化
-Docker Daemon： $DOCKER_HOST
-Compose File： $DOCKER_COMPOSE_FILE
-Compose Stack Name: $DOCKER_COMPOSE_STACK
+Docker Daemon:  $DOCKER_HOST
+Compose File:   $DOCKER_COMPOSE_FILE
+Compose Name:   $DOCKER_COMPOSE_STACK
 
 EOF_help
+}
+
+####################
+# interactive_menu #
+####################
+
+function interactive_menu() {
+    cat << EOF_menu
+以下是当前的 Docker 服务器和编排文件：
+
+Docker 服务器:  $DOCKER_HOST
+编排文件:       $DOCKER_COMPOSE_FILE
+编排组:         ${DOCKER_COMPOSE_STACK}
+
+0. init         更改本机或远端的 Docker 服务器或编排组
+1. images       查看 Docker 服务器的镜像
+2. ps           查看当前编排组容器概况
+3. logs         查看当前编排组容器日志
+4. bash         进入容器运行用 bash 进行交互
+5. up           创建并运行当前编排组
+6. down         停止并删除当前编排组
+
+EOF_menu
+read -p "Choose the number of command: " cho
+case $cho in
+'0') script_init ;;
+'1') docker_image_ls ;;
+'2') docker_compose_ps ;;
+'3') docker_compose_logs ;;
+'4') docker_compose_bash ;;
+'5') docker_compose_up ;;
+'6') docker_compose_down ;;
+esac
 }
 
 ###################
@@ -326,6 +359,7 @@ function main() {
     main_command=$1
     shift
     case $main_command in 
+        '')         interactive_menu ;;
         -h)         show_help ;                 exit 0  ;;
         --help)     show_help ;                 exit 0  ;;
         help)       show_help ;                 exit 0  ;;
@@ -340,7 +374,7 @@ function main() {
         restart)    docker_compose_restart $@;  exit 0  ;;
         stop)       docker_compose_stop $@ ;    exit 0  ;;
         down)       docker_compose_down $@ ;    exit 0  ;;
-        ls)         docker_compose_ps $@ ;      exit 0  ;;
+        ps)         docker_compose_ps $@ ;      exit 0  ;;
         logs)       docker_compose_logs $@ ;    exit 0  ;;
         bash)       docker_compose_bash ;;
         port)       docker_compose_port $@  ;   exit 0  ;;
