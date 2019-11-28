@@ -1,0 +1,8 @@
+version: '2.4'
+services: 
+  sshwifty:
+    image: niruix/sshwifty
+    network_mode: bridge
+    ports: 
+      - 8182:8182 
+    restart: always
