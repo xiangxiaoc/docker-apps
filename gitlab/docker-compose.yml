@@ -1,10 +1,10 @@
-version: '3.4'
+version: "3.4"
 
 services:
   gitlab-ce:
     image: gitlab/gitlab-ce:11.6.0-ce.0 # 2018年12月31日
     hostname: gitlab.example.com
-    environment: 
+    environment:
       # 配置 OMNIBUS_CONFIG
       GITLAB_OMNIBUS_CONFIG: "external_url 'http://my.domain.com/'; gitlab_rails['lfs_enabled'] = true;"
     ports:
