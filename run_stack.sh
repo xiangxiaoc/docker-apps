@@ -234,13 +234,13 @@ function show_help() {
 Docker stack deploy script , version: 1.3.4 , build: 2018-09-17 16:46:32
 
 Usage: $0 Command [arg]
-            
+
 Commands:
 
   init              脚本初始化
   save              备份当前编排文件里面用到的镜像
   load [dir_name]   载入 ./images 目录下的镜像 [指定目录]
-  port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]  
+  port [PORT]       查看对外暴露端口 [指定对外暴露端口 示例：$0 port 51000]
   config            配置管理
   deploy            部署或更新服务栈
   ls                查看各服务概况
