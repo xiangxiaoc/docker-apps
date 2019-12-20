@@ -1,0 +1,15 @@
+version: "2.2"
+services:
+  aws-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aws-cli:latest
+    volumes:
+      - my-aws-profile:/root/.aws
+    network_mode: bridge
+    stdin_open: true
+    tty: true
+volumes:
+  my-aws-profile:
+    driver: local
