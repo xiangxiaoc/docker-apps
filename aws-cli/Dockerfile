@@ -5,3 +5,5 @@ RUN pip install awscli -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host 
     echo "complete -C aws_completer aws" >>/root/.bashrc
 
 WORKDIR /root
+
+CMD [ "/bin/bash" ]
