@@ -5,11 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: aws-cli:debian-slim
+    image: aws-cli:ubuntu-1804
     volumes:
       - my-aws-profile:/root/.aws
     network_mode: bridge
-    stdin_open: true
     tty: true
 volumes:
   my-aws-profile:
