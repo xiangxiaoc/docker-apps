@@ -1,12 +1,12 @@
-version: '2.2'
+version: "2.2"
 services:
   jenkins:
     container_name: jenkins
-    image: jenkins/jenkins:2.204
+    image: jenkins/jenkins:2.204.1
     network_mode: bridge
     ports:
-      - '8080:8080'
-      - '50000:50000'
+      - "8080:8080"
+      - "50000:50000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -21,8 +21,8 @@ services:
     logging:
       driver: json-file
       options:
-        max-file: '1'
-        max-size: '10m'
+        max-file: "1"
+        max-size: "10m"
     restart: always
 volumes:
   jenkins_data:
