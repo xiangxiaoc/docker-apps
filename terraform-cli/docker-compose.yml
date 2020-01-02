@@ -5,6 +5,6 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: terraform:ubuntu-1804
+    image: terraform-cli:ubuntu-1804
     network_mode: bridge
     tty: true
