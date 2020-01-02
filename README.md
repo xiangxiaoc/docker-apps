@@ -2,11 +2,15 @@
 
 这是一些经过测试的 docker 服务编排，对于服务相关的介绍，如果有的话，会在其对应的目录内说明。一般情况下可以直接 `docker-compose up` 或者 `docker stack deploy`，但涉及到大量数据存储的服务，最好还配置好数据存储目录，再启动服务。
 
-其中可能会有几个部分是专门用来了解和学习的，通过修改配置文件中的 code，来测试和检验想要更改的选项是否生效。
+其中可能会有几个部分是专门用来了解和学习的。可以通过修改配置文件中的 code，来测试和检验想要更改的选项是否生效。
 
-## 两个脚本
+There may be several sections devoted to understanding and learnin. You can test and verify that the options you want to change take effect by modifying the code in the configuration file.
 
-在此提供了 Linux shell 脚本，可能只会减少一点点操作的时间，但对 docker 系列命令不熟悉的同学有较大的帮助。
+## 两个脚本 Two Scripts
+
+下面提供了如下所示的两个 Linux shell 脚本，可能只会减少一点点操作的时间，但对 docker 系列命令不熟悉的同学有较大的帮助。
+
+The two Linux shell scripts are provided below, which may only reduce the operation time a little, but will be helpful to those who are unfamiliar with the docker commands.
 
 ### run_compose.sh
 
