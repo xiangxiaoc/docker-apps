@@ -1,0 +1,10 @@
+version: "2.2"
+services: 
+  terraform-cli:
+    container_name: terraform-cli
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: terraform:ubuntu-1804
+    network_mode: bridge
+    tty: true
