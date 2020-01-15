@@ -1,9 +1,9 @@
-version: '3'
-
-services: 
-
+version: "2.4"
+services:
   shadowsocks:
-    image: shadowsocks/shadowsocks-libev
+    image: shadowsocks/shadowsocks-libev:v3.3.4
+    platform: linux
+    network_mode: bridge
     ports:
       - "8388:8388/tcp"
       - "8388:8388/udp"
