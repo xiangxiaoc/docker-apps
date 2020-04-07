@@ -2,11 +2,10 @@ version: "2.2"
 services:
   jenkins:
     container_name: jenkins
-    image: jenkins/jenkins:2.204.1
+    image: jenkins/jenkins:lts
     network_mode: bridge
-    ports:
+    ports: 
       - "8080:8080"
-      - "50000:50000"
     volumes:
       - jenkins_data:/var/jenkins_home
     mem_limit: 2g
