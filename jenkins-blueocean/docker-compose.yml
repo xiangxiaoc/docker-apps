@@ -1,0 +1,22 @@
+version: "2.2"
+services:
+  main-server:
+    container_name: blueocean
+    image: jenkinsci/blueocean:1.22.0 # 2020-04-07
+    ports:
+      - "8080:8080"
+    network_mode: bridge
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins-data:/var/jenkins_home
+    logging:
+      driver: json-file
+      options:
+        max-file: "1"
+        max-size: 10m
+    mem_limit: 2g
+    cpus: 2
+    restart: always
+volumes:
+  jenkins-data:
+    driver: local
