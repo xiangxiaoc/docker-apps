@@ -1,0 +1,26 @@
+version: "3.4"
+
+services:
+  main-server:
+    container_name: gitlab-ce
+    image: gitlab/gitlab-ce:11.6.0-ce.0 # 2018年12月31日
+    hostname: gitlab.example.com
+    environment:
+      # 配置 OMNIBUS_CONFIG
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://my.domain.com/'
+        gitlab_rails['lfs_enabled'] = true
+    ports:
+      - "8443:443"
+      - "80:80"
+      - "22:22"
+    volumes:
+      - /mnt/data/gitlab/config:/etc/gitlab
+      - /mnt/data/gitlab/logs:/var/log/gitlab
+      - /mnt/data/gitlab/data:/var/opt/gitlab
+    # logging:
+    #   driver: json-file
+    #   options:
+    #     max-file: '1'
+    #     max-size: 10m
+    restart: always
