@@ -1,24 +1,14 @@
 # 概述
 
-这是一些经过测试的 docker 服务编排，对于服务相关的介绍，如果有的话，会在其对应的目录内说明。一般情况下可以直接 `docker-compose up` 或者 `docker stack deploy`，但涉及到大量数据存储的服务，最好还配置好数据存储目录，再启动服务。
+这里是一些经过测试的容器化服务编排项目。 基本上是遵循 Docker 倡导的 "编码一次，到处运行"。 对 `docker-compose` 熟悉的老手可以直接取用需要的 YAML 文件。 相关的注意事项，如果有的话，会在其对应的目录内补充说明。
 
-其中可能会有几个部分是专门用来了解和学习的。可以通过修改配置文件中的 code，来测试和检验想要更改的选项是否生效。
+其中几个编排项目是专门用来了解和学习 docker 相关的机制。例如 `logging-driver`，可以了解到可以给容器配置多种日志驱动，按需进行日志管理。
 
-There may be several sections devoted to understanding and learnin. You can test and verify that the options you want to change take effect by modifying the code in the configuration file.
+## docker-compose.sh 脚本
 
-## 两个脚本 Two Scripts
+本项目提供了一个 Shell 脚本，通过交互的方式，实现了常用的操作。使用它来部署和管理可能会减少一点点操作时间，但对 docker 及 docker-compose 系列命令不熟悉的同学有较大的帮助。(事实上我一直在使用，因为懒得敲命令)
 
-下面提供了如下所示的两个 Linux shell 脚本，可能只会减少一点点操作的时间，但对 docker 系列命令不熟悉的同学有较大的帮助。
-
-The two Linux shell scripts are provided below, which may only reduce the operation time a little, but will be helpful to those who are unfamiliar with the docker commands.
-
-### run_compose.sh
-
-基于 `docker-compose COMMAND` 编排软件编写的脚本，基本上支持原生 docker-compose 主要的命令操作。
-
-在使用前请务必确认 /usr/local/bin/docker-compose 文件存在，并且 docker-compose version >= '1.21.0' ，您可以从 docker 官方 [Github](https://github.com/docker/compose/releases) 下载 docker-compose，也可以点击[Docker 套装快速安装](https://github.com/xiangxiaoc/docker-ce_docker-compose_nvidia-docker2)，来获取 docker-compose
-
-### run_stack.sh
+### run_stack.sh(弃用)
 
 基于 `docker stack COMMAND` 命令的管理编排脚本，同时也整合了一些 `docker service` 的命令，方便统一操作。
 
@@ -29,9 +19,9 @@ The two Linux shell scripts are provided below, which may only reduce the operat
 docker swarm init
 ```
 
-#### Compose File Format
+## Compose File Format
 
-默认的编排文件格式版本可能过高，结合 docker-ce 或者 docker-compose 的版本适当降低编排文件格式版本，参考官方文档查看对照表：
+默认的编排文件版本基本采用的是 2.x，方便直接设置内存分配，如果安装的 docker 和 docker-compose 版本过低，参考官方文档查看对照表，根据自己的版本进行适当的调整。
 
 https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix
 

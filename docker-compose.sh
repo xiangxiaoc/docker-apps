@@ -245,7 +245,7 @@ function docker_compose_stop() {
 
 function docker_compose_down() {
     echo -e "读取部署编排文件 $compose_file \n开始移除容器 ... "
-    docker-compose -H "$DOCKER_DAEMON" -p "$container_group_name" -f "$compose_file" down "$@"
+    docker-compose -H "$DOCKER_DAEMON" -p "$container_group_name" -f "$compose_file" down --remove-orphans
 }
 
 function docker_compose_ps() {
