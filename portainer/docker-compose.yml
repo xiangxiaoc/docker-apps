@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  server:
+  portainer:
     image: portainer/portainer
     container_name: portainer
     network_mode: bridge
