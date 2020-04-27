@@ -6,7 +6,7 @@
 # Initialization #
 ##################
 
-CONFIG_FILE='docker-compose.config'
+CONFIG_FILE='docker-compose.conf'
 
 function parse_config_file() {
     local field=$1
