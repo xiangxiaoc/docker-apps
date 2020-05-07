@@ -24,10 +24,12 @@ docker_daemon_port=$(parse_config_file docker_daemon_port)
 ##########################
 
 if [ -n "$docker_daemon_port" ]; then
-    DOCKER_DAEMON=$docker_daemon_host:$docker_daemon_port
+    DOCKER_DAEMON="$docker_daemon_host:$docker_daemon_port"
 fi
 if [ -z "$docker_daemon_host" ] && [ -z "$docker_daemon_port" ]; then
     DOCKER_HOST_DISPLAY="本机(/var/run/docker.sock)"
+else
+    DOCKER_HOST_DISPLAY="$DOCKER_DAEMON"
 fi
 
 # Output Color
