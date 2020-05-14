@@ -10,22 +10,57 @@
 
 ## docker-compose.sh 脚本
 
-本项目提供了一个 Shell 脚本，通过交互的方式，实现了常用的操作。使用它来部署和管理可能会减少一点点操作时间，但对 docker 及 docker-compose 系列命令不熟悉的同学有较大的帮助。(事实上我一直在使用，因为懒得敲命令)
+本项目提供了一个 Shell 脚本，通过交互的方式，实现了常用的操作。使用它来部署和管理可能会减少一点点操作时间，但对 docker 及 docker-compose 系列命令不熟悉的同学有较大的帮助。(实际上我一直在使用，因为懒，可以少敲点命令)
 
-### run_stack.sh(弃用)
+## Compose File 格式
 
-基于 `docker stack COMMAND` 命令的管理编排脚本，同时也整合了一些 `docker service` 的命令，方便统一操作。
+默认的编排文件版本基本采用的是 2.x，相比 1.x 扩展了很多功能，几乎将 docker 命令的参数都实现了，举例如下。
 
-请确保 Docker 服务器已经启用 "swarm mode"，并且 docker-ce version >= '17.12.0'
+```yaml
+version: "2.4"
+services:
+  postgresql:
+    image: postgresql
+    ports:
+      - 5432:5432
 
-```sh
-# 初始化本机 Docker 服务器为 Swarm 集群主节点
-docker swarm init
+    # cpu 设置
+    cpu_count: 2
+    cpu_percent: 50
+    cpus: 0.5
+    cpu_shares: 73
+    cpu_quota: 50000
+    cpu_period: 20ms
+    cpuset: 0,1
+
+    # 用户和工作目录设置
+    user: postgresql
+    working_dir: /code
+
+    # 在容器中系统级别的设置
+    domainname: foo.com
+    hostname: foo
+    ipc: host
+    mac_address: 02:42:ac:11:65:43
+
+    # 内存设置
+    mem_limit: 1000000000
+    memswap_limit: 2000000000
+    mem_reservation: 512m
+    privileged: true
+
+    # 超出内存则自动结束容器
+    oom_score_adj: 500
+    oom_kill_disable: true
+
+    # 其他设置
+    read_only: true
+    shm_size: 64M
+    stdin_open: true
+    tty: true
 ```
 
-## Compose File Format
-
-默认的编排文件版本基本采用的是 2.x，方便直接设置内存分配，如果安装的 docker 和 docker-compose 版本过低，参考官方文档查看对照表，根据自己的版本进行适当的调整。
+可以参考官方文档查看对照表，根据本地的 Docker Engine 版本，确认是否支持 compose file 的版本。
 
 https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix
 
