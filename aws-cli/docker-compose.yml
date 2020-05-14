@@ -1,14 +1,12 @@
 version: "2"
 services:
   aws-cli:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: aws-cli:ubuntu-1804
-    volumes:
-      - my-aws-profile:/root/.aws
+    container_name: aws-cli
+    image: amazon/aws-cli
     network_mode: bridge
+    volumes:
+      - ~/.aws:/root/.aws # share host aws configuration
+      - ./.bashrc:/root/.bashrc # for command completion
+    entrypoint:
+      - bash
     tty: true
-volumes:
-  my-aws-profile:
-    driver: local

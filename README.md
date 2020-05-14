@@ -1,30 +1,19 @@
-# 概述
+# docker-compose Script Client
 
-这里是一些经过测试的容器化服务编排项目。 基本上是遵循 Docker 倡导的 "编码一次，到处运行"。 对 `docker-compose` 熟悉的老手可以直接取用需要的 YAML 文件。 相关的注意事项，如果有的话，会在其对应的目录内补充说明。
+[中文版 README](README_zh.md)
 
-其中几个编排项目是专门用来了解和学习 docker 相关的机制。例如 `logging-driver`，可以了解到可以给容器配置多种日志驱动，按需进行日志管理。
+## Overview
 
-## docker-compose.sh 脚本
+Here are some of the tested container service choreography project. Basically is to follow the Docker advocated by the "code once, run anywhere". For `docker-compose` familiar veteran can direct access to YAML files.Relevant points for attention, if any, will be added in their corresponding directories.
 
-本项目提供了一个 Shell 脚本，通过交互的方式，实现了常用的操作。使用它来部署和管理可能会减少一点点操作时间，但对 docker 及 docker-compose 系列命令不熟悉的同学有较大的帮助。(事实上我一直在使用，因为懒得敲命令)
+Several of the choreography projects are dedicated to understanding and learning about docker-related mechanisms.For example 'logging-driver', you can see that you can configure the container with multiple log drivers for log management as needed.
 
-### run_stack.sh(弃用)
+## docker-compose.sh Script
 
-基于 `docker stack COMMAND` 命令的管理编排脚本，同时也整合了一些 `docker service` 的命令，方便统一操作。
-
-请确保 Docker 服务器已经启用 "swarm mode"，并且 docker-ce version >= '17.12.0'
-
-```sh
-# 初始化本机 Docker 服务器为 Swarm 集群主节点
-docker swarm init
-```
+This project provides a Shell script, through the way of interaction, realizes the common operation.Use it to deploy and manage may reduce a little bit of operating time, but the docker and docker - compose with the help of a larger series of commands are not familiar with classmates(in fact I have been in use, because lazy to knock command).
 
 ## Compose File Format
 
-默认的编排文件版本基本采用的是 2.x，方便直接设置内存分配，如果安装的 docker 和 docker-compose 版本过低，参考官方文档查看对照表，根据自己的版本进行适当的调整。
+The default version of the orchestration file is basically 2.x, which is convenient to set the memory allocation directly. If the installed docker and docker-compose versions are too low, please refer to the official documentation to see the comparison table and make appropriate adjustments according to your own version.
 
 https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix
-
-## 小贴士
-
-中国区 registry mirror https://registry.docker-cn.com
