@@ -1,22 +1,22 @@
-version: '2'
+version: '2.4'
 services:
 
   portainer:
-    image: portainer/portainer
+    image: portainer/portainer-ce:2.0.0
     container_name: portainer
     network_mode: bridge
     ports:
       - 9000:9000
+      - 8000:8000
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - portainer_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker/volumes:/var/lib/docker/volumes
     restart: always
     logging:
       driver: json-file
       options:
-        max-file: '3'
+        max-file: '1'
         max-size: '10m'
 
 volumes:
