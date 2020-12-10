@@ -1,25 +1,32 @@
-version: '3.7'
+version: "2.4"
 services:
-
-  mysql-server:
+  db:
     container_name: mysql-server
     image: mysql:5.7
     ports:
-      - '3306:3306'
-    command: --character-set-server=utf8 --collation-server=utf8_bin # utf8 大法好
+      - "3306:3306"
+    command: --character-set-server=utf8 --collation-server=utf8_bin
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /usr/share/zoneinfo:/usr/share/zoneinfo:ro
       - /etc/timezone:/etc/timezone:ro
-      - ./config/mysql:/etc/mysql
-      - ./data/mysql-server:/var/lib/mysql
+      - db-config:/etc/mysql
+      - db-data:/var/lib/mysql
     logging:
       driver: json-file
       options:
-        max-file: '1'
+        max-file: "1"
         max-size: 10m
 
-# volumes:
-#   db_data:
+  # WEB UI
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  db-config:
+  db-data:
