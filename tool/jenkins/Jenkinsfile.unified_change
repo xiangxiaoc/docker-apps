@@ -1,0 +1,82 @@
+pipeline {
+    agent any
+    environment {
+        PATH = "/usr/local/bin:$PATH"
+    }
+    options {
+        // ansiColor('xterm')
+        // timestamps()
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+    parameters {
+        choice(
+            name: 'door_choice',
+            choices: ['One', 'Two', 'Three'],
+            description: 'What door do you choose?'
+        )
+        booleanParam(
+            name: 'can_dance',
+            // defaultValue: true,
+            description: 'Checkbox parameters'
+        )
+        string(
+            name: 'aaa',
+            // defaultValue: 'aaa',
+            description: 'ccc'
+        )
+    }
+    stages {
+        stage('检测输入参数') {
+            steps {
+                script {
+                    println params.door_choice 
+                    println params.can_dance 
+                    println params.aaa
+                }
+            }
+        }
+        stage('检查环境') {
+            steps {
+                echo '磁盘剩余空间 20G 20%'
+                echo '剩余内存 32G 50%'
+            }
+        }        
+        stage('编译') {
+            steps {
+                echo '编译完成'
+            }
+        }
+        stage('上传') {
+            steps {
+                echo '上传完成'
+            }
+        }        
+        stage('停机') {
+            steps {
+                echo 'xxx停机完成'
+            }
+        }    
+        stage('启动服务') {
+            steps {
+                echo 'xxx运行xxx服务成功'
+            }
+        }
+        stage('健康检测') {
+            steps {
+                echo '服务正常'
+            }
+        }
+        stage('失败回滚') {
+            steps {
+                echo '回滚版本xxx已完成'
+            }
+        }                  
+    }
+    post {
+        always {
+            echo 'pipeline finished'
+            echo '通知结果发送至...'
+            // cleanWs()
+        }
+    }
+}

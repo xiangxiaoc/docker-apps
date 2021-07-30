@@ -1,0 +1,20 @@
+version: "2"
+services: 
+    influxdb2:
+        image: influxdb:2
+        ports: 
+            - 8086:8086
+        volumes: 
+            - ./config.yml:/etc/influxdb2/config.yml:ro # influxd 配置文件
+            - influxdb2:/var/lib/influxdb2 # influxdb 数据根目录
+        command: 
+            - --reporting-disabled # 禁止发送统计数据到 InfluxData
+    
+    telegraf:
+        image: telegraf
+        volumes: 
+            - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+
+
+volumes: 
+    influxdb2:

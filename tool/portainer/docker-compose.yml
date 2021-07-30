@@ -2,7 +2,7 @@ version: '2.4'
 services:
 
   portainer:
-    image: portainer/portainer-ce:2.0.0
+    image: portainer/portainer-ce
     container_name: portainer
     network_mode: bridge
     ports:

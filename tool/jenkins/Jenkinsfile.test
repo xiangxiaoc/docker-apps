@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    environment {
+        PATH = "/usr/local/bin:$PATH"
+    }
+    options {
+        // ansiColor('xterm')
+        // timestamps()
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+    parameters {
+        choice(
+            name: 'door_choice',
+            choices: ['One', 'Two', 'Three'],
+            description: 'What door do you choose?'
+        )
+        booleanParam(
+            name: 'can_dance',
+            // defaultValue: true,
+            description: 'Checkbox parameters'
+        )
+        string(
+            name: 'aaa',
+            // defaultValue: 'aaa',
+            description: 'ccc'
+        )
+    }
+    stages {
+        stage('check input') {
+            steps {
+                script {
+                    println params.door_choice 
+                    println params.can_dance 
+                    println params.aaa
+                }
+            }
+        }
+        stage('test') {
+            steps {
+                echo 'in test stage'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'pipeline finished'
+            // cleanWs()
+        }
+    }
+}

@@ -1,0 +1,12 @@
+version: "2"
+services: 
+  grafana:
+    image: grafana/grafana
+    user: "472" # https://grafana.com/docs/grafana/latest/installation/docker/
+    ports: 
+      - 3000:3000
+    networks: 
+      - grafana
+
+networks: 
+  grafana:

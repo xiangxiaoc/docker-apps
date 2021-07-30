@@ -7,8 +7,8 @@ services:
     ports: 
       - "8080:8080"
     volumes:
-      - jenkins_data:/var/jenkins_home
-    mem_limit: 2g
+      - jenkins_home:/var/jenkins_home
+    mem_limit: 4g
     cpus: 2
     logging:
       driver: json-file
@@ -17,4 +17,4 @@ services:
         max-size: "5m"
     restart: always
 volumes:
-  jenkins_data:
+  jenkins_home:
