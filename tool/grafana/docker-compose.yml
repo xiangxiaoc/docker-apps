@@ -2,7 +2,9 @@ version: "2"
 services: 
   grafana:
     image: grafana/grafana
-    user: "472" # https://grafana.com/docs/grafana/latest/installation/docker/
+    # Granfana user ID is 472 instead of 104 when >= v5.1 
+    # https://grafana.com/docs/grafana/latest/installation/docker/#migrate-from-previous-docker-containers-versions 
+    user: "472" 
     ports: 
       - 3000:3000
     networks: 
