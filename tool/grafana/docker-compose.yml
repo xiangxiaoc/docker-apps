@@ -1,14 +1,16 @@
 version: "2"
 services: 
   grafana:
-    image: grafana/grafana
-    # Granfana user ID is 472 instead of 104 when >= v5.1 
+    image: "grafana/grafana:${GRAFANA_VERSION:-8.1.0}" # 2021-8-6
+    # Grafana user ID is 472 instead of 104 when >= v5.1 
     # https://grafana.com/docs/grafana/latest/installation/docker/#migrate-from-previous-docker-containers-versions 
-    user: "472" 
+    user: "472"
+    env_file: 
+      - ./grafana.env
     ports: 
       - 3000:3000
     networks: 
-      - grafana
+      - grafana-net
 
 networks: 
-  grafana:
+  grafana-net:
