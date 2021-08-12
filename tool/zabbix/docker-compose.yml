@@ -19,7 +19,7 @@ services:
       - zabbix-net
 
   java-gateway:
-    image: zabbix/zabbix-java-gateway:alpine-5.4-latest
+    image: zabbix/zabbix-java-gateway:alpine-${ZABBIX_STACK_VERSION:-5.4}-latest
     container_name: zabbix-java-gateway
     volumes: 
       - zbx-java-gw-lib:/usr/sbin/zabbix_java/ext_lib
@@ -27,7 +27,7 @@ services:
       - zabbix-net
           
   server:
-    image: zabbix/zabbix-server-mysql:alpine-5.4-latest
+    image: zabbix/zabbix-server-mysql:alpine-${ZABBIX_STACK_VERSION:-5.4}-latest
     container_name: zabbix-server
     environment: 
       DB_SERVER_HOST: "mysql"
@@ -46,7 +46,7 @@ services:
       - zabbix-net
       
   web:
-    image: zabbix/zabbix-web-nginx-mysql:alpine-5.4-latest
+    image: zabbix/zabbix-web-nginx-mysql:alpine-${ZABBIX_STACK_VERSION:-5.4}-latest
     environment: 
       ZBX_SERVER_HOST: "server"
       DB_SERVER_HOST: "mysql"
@@ -60,9 +60,8 @@ services:
       - zabbix-net
     
   agent:
-    image: zabbix/zabbix-agent
+    image: zabbix/zabbix-agent:alpine-${ZABBIX_STACK_VERSION:-5.4}-latest
     environment: 
-      ZBX_HOSTNAME: agent
       ZBX_SERVER_HOST: server
     networks: 
       - zabbix-net
