@@ -1,4 +1,4 @@
-# docker-compose Script Client
+# docker apps
 
 [中文版 README](README_zh.md)
 
