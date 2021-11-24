@@ -1,4 +1,4 @@
-version: "2"
+version: "2.4"
 services: 
     influxdb2:
         image: influxdb:2

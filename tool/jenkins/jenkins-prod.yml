@@ -1,12 +1,12 @@
-version: "2.2"
+version: "2.4"
 services:
   jenkins:
     container_name: jenkins
-    image: jenkins/jenkins:lts
-    network_mode: bridge
-    ports:
-      - "8080:8080"
-      - "50000:50000"
+    image: jenkins/jenkins:${jenkins_version:-lts}
+    network_mode: host
+    # ports:
+    #   - "8080:8080"
+    #   - "50000:50000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -15,7 +15,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro # chmod 666 /var/run/docker.sock
       # Use host's kubectl and remember to copy the kubeconfig to /var/jenkins_home/.kube/ of container
       - /usr/bin/kubectl:/usr/bin/kubectl:ro
-      - jenkins_data:/var/jenkins_home
+      # - jenkins_data:/var/jenkins_home
+      - ./jenkins_home:/var/jenkins_home:rw
+      - ./tools:/tools:ro
+    user: root
     mem_limit: 4g
     cpus: 2
     logging:

@@ -1,18 +1,18 @@
 # docker apps
 
-[中文版 README](README_zh.md)
+[中文 README](README_zh.md)
 
 ## Overview
 
 Here are some tested containerized service orchestration projects. Basically follow the "coding once, run everywhere" advocated by Docker. Veteran familiar with `docker-compose` can directly access the required YAML files. Relevant precautions, if any, will be supplemented in the corresponding catalog.
 
-Several of the orchestration projects are dedicated to understanding and learning docker-related mechanisms. For example, `logging-driver`, you can learn that you can configure a variety of log drivers for the container, and perform log management as needed.
+Several of the orchestration projects are dedicated to understanding and learning docker-related mechanisms. For example, `logging-driver`, you can learn about which log drivers that docker supports.
 
 ## docker-compose.sh Script
 
-This project provides a shell script that implements common operations through interaction. Using it for deployment and management may reduce operation time a little, but it is of great help to students who are not familiar with the docker and docker-compose series of commands. (Actually, I have been using it because I am lazy, so I can type less commands)
+This project provides a shell script that implements common operations through interaction. Using it for deployment and management may reduce operation time a little, but it is of great help to students who are not familiar with the docker and docker-compose series of commands. (Actually, I have been using it because I am lazy, so I can type fewer commands)
 
-## Compose File Format
+## docker-compose.yml File Format
 
 The default version of the layout file basically uses 2.x. Compared with 1.x, it expands many functions, and almost all the parameters of the docker command are implemented. The examples are as follows.
 
@@ -22,7 +22,7 @@ services:
   postgresql:
     image: postgresql
     ports:
-      - 5432:5432
+      - "5432:5432"
 
     # cpu set
     cpu_count: 2
@@ -62,3 +62,11 @@ services:
 You can refer to the official documentation to check the comparison table, and confirm whether the compose file version is supported according to the local Docker Engine version.
 
 https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-matrix
+
+## Tips
+
+### docker installation
+
+```shell
+bash get-docker.sh
+```

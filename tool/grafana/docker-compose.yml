@@ -1,4 +1,4 @@
-version: "2"
+version: "2.4"
 services: 
   grafana:
     image: "grafana/grafana:${GRAFANA_VERSION:-8.1.0}" # 2021-8-6

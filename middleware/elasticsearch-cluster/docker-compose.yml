@@ -1,4 +1,4 @@
-version: '2.2'
+version: "2.4"
 services:
   elasticsearch:
     image: elasticsearch:6.8.4

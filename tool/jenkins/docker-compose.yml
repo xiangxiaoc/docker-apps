@@ -1,8 +1,8 @@
-version: "2.2"
+version: "2.4"
 services:
   jenkins:
     container_name: jenkins
-    image: jenkins/jenkins:lts
+    image: jenkins/jenkins:${jenkins_version:-lts}
     network_mode: bridge
     ports: 
       - "8080:8080"
