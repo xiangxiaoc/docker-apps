@@ -1,23 +1,22 @@
-version: "3.4"
+version: "2.4"
 
 services:
   mongo:
     image: mongo:3.6.7
+    networks:
+      - graylog-net
     ports:
       - "27017"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - mongo_db:/data/db
       - mongo_configdb:/data/configdb
-    logging:
-      driver: json-file
-      options:
-        max-file: "1"
-        max-size: "10m"
     restart: always
 
   elasticsearch:
     image: elasticsearch:5.6.12
+    networks:
+      - graylog-net    
     ports:
       - "9200"
     environment:
@@ -29,15 +28,12 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - elasticsearch_data:/usr/share/elasticsearch/data
-    logging:
-      driver: json-file
-      options:
-        max-file: "1"
-        max-size: "10m"
     restart: always
 
   graylog:
     image: graylog/graylog:2.4
+    networks:
+      - graylog-net
     ports:
       - "9999:9000"
       - "514:514"
@@ -52,11 +48,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - graylog_data:/usr/share/graylog/data
       - ./config/graylog.conf:/usr/share/graylog/data/config/graylog.conf
-    logging:
-      driver: json-file
-      options:
-        max-file: "1"
-        max-size: "10m"
     restart: always
 
 volumes:
@@ -64,3 +55,7 @@ volumes:
   mongo_configdb:
   elasticsearch_data:
   graylog_data:
+
+networks:
+  graylog-net:
+    driver: bridge
