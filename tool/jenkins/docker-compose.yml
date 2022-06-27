@@ -1,10 +1,11 @@
 version: "2.4"
+
 services:
   jenkins:
     container_name: jenkins
     image: jenkins/jenkins:${jenkins_version:-lts}
     network_mode: bridge
-    ports: 
+    ports:
       - "8080:8080"
     volumes:
       - jenkins_home:/var/jenkins_home
@@ -16,5 +17,6 @@ services:
         max-file: "1"
         max-size: "5m"
     restart: always
+
 volumes:
   jenkins_home:
