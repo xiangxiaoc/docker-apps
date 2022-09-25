@@ -69,6 +69,9 @@ https://docs.docker.com/compose/compose-file/compose-versioning/#compatibility-m
 ### docker 安装
 
 ```shell
+# 使用官方仓库
+bash get-docker.sh
+# 使用阿里云仓库
 bash get-docker.sh --mirror Aliyun
 ```
 
