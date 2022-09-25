@@ -1,0 +1,12 @@
+version: "2.4"
+services: 
+  sqlplus:
+    container_name: sqlplus
+    image: sflyr/sqlplus
+    environment: 
+      LANG: "C.UTF-8"
+      LANGUAGE: "C.UTF-8"
+    network_mode: host
+    working_dir: /instantclient_11_2
+    command: bash
+    tty: true
