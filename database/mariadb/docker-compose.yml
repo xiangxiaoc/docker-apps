@@ -1,0 +1,32 @@
+version: "2.4"
+services:
+  db:
+    container_name: mariadb
+    image: mariadb:${MARIADB_VERSION:-10.6}
+    ports:
+      - "3306:3306"
+    command: 
+      - --character-set-server=utf8mb4 
+      - --collation-server=utf8mb4_unicode_ci
+    env_file:
+      - ./mariadb.env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /usr/share/zoneinfo:/usr/share/zoneinfo:ro
+      - /etc/timezone:/etc/timezone:ro
+      - db-data:/var/lib/mysql
+    # logging:
+    #   driver: json-file
+    #   options:
+    #     max-file: "1"
+    #     max-size: 10m
+
+  # WEB UI
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8456:8080
+
+volumes:
+  db-data:

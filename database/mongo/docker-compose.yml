@@ -1,0 +1,31 @@
+version: "2.4"
+services: 
+  mongo:
+    image: mongo:${MONGO_VERSION:-5}
+    restart: always
+    env_file: 
+      - mongo.env
+    ports: 
+      - 27017:27017
+    networks: 
+      - net
+    volumes: 
+      - mongo_db:/data/db
+      - mongo_configdb:/data/configdb
+
+  mongo-express:
+    image: mongo-express:${MONGO_EXPRESS_VERSION:-latest}
+    restart: always
+    ports:
+      - 8081:8081
+    networks: 
+      - net
+    env_file: 
+      - mongo-express.env
+
+networks: 
+  net:
+
+volumes: 
+  mongo_db:
+  mongo_configdb:
