@@ -8,9 +8,19 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - jenkins_home:/var/jenkins_home
-    mem_limit: 4g
-    cpus: 2
+      # timezone and localtime
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      # Use host's docker client and socket to communicate with host's docker deamon
+      - /usr/bin/docker:/usr/bin/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # chmod 666 /var/run/docker.sock
+      - /root/.docker:/root/.docker # image registry authentication 
+      # jenkins data
+      - jenkins_home:/var/jenkins_home:rw
+      # tools on host
+      - ./tools:/tools:ro
+    mem_limit: 8g
+    cpus: 4
     logging:
       driver: json-file
       options:
