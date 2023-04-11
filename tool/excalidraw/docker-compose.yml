@@ -1,0 +1,12 @@
+version: "2.4"
+services:
+  excalidraw:
+    image: excalidraw/excalidraw:latest
+    ports:
+      - 5080:80
+    network_mode: bridge
+    logging:
+      driver: json-file
+      options:
+        max-file: "1"
+        max-size: "10m"
