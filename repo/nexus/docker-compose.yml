@@ -1,14 +1,14 @@
 # chown 200 -R /sonatype-work
-version: '3' 
-services: 
+version: "2.4"
+services:
   nexus:
     container_name: nexus
     image: sonatype/nexus
-    network_mode: bridge    
-    ports: 
+    network_mode: bridge
+    ports:
       - 8081:8081
-    volumes: 
+    volumes:
       - nexus-data:/sonatype-work
     restart: always
-volumes: 
+volumes:
   nexus-data:
